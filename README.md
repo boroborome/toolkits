@@ -1,7 +1,7 @@
 # toolkits
----
+
 ## 组件介绍
----
+
 - combination 提供对多个维度数据进行排列组合功能
 - EasyIterator 功能类似Stream，但是增加了对排序后数据进行流式group的能力
 - utils 各种常用小工具的集合
@@ -69,7 +69,7 @@ EasyIterator.from(studentStream)                                                
 //  .toMapList(v -> createKey(v));                                                  // 生成一个key,List<value>的map，key相同的value分组到一个列表中了
 
 ```
----
+
 ### utils 组件
 各种常用小工具的集合
 - StreamUtils 在Stream上操作的工具
