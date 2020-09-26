@@ -33,9 +33,9 @@ public class CombineResult<K, V> {
      *     <li>b: [{'key': 'd1', 'value': 'd1v1'}, {'key': 'd2', 'value': null}]</li>
      *     <li>c: [{'key': 'd1', 'value': 'd1v2'}, {'key': 'd2', 'value': null}]</li>
      * </ul>
-     * a.isOver(b) == true;</br>
-     * a.isOver(c) == false;</br>
-     * a.isOver(a) == false;</br>
+     * a.isOver(b) == true;<br>
+     * a.isOver(c) == false;<br>
+     * a.isOver(a) == false;<br>
      * @param otherResult The other result to check with
      * @return Result
      */

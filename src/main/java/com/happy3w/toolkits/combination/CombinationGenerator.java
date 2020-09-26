@@ -13,23 +13,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * <p><b>Example</b></p>
- * <pre><code>
- * DimensionManager<String, String> dimensionManager = new DimensionManager<>(
- *  Pair.ofList("d1", "1", "2"),
- *  Pair.ofList("d2", "d2v1", "d2v2")
- * );
- *
- * Stream<List<Pair<String, String>>> combineResultStream = CombinationGenerator.generateExtWithNull(dimensionManager.getDimensions());
- * List<MyConfig> myConfigs = combineResultStream.map(r -> new MyConfig(r)).collect(Collectors.toList());
- *
- * dimensionManager.createOverRelation(myConfigs, MyConfig::getDimensions, MyConfig::setSubConfigs);
- *
- * Assert.assertEquals(3*3, myConfigs.size());
- * Map<String, MyConfig> configMap = ListUtils.toMap(myConfigs, MyConfig::getName);
- * Assert.assertEquals("[[d1:null, d2:null], [d1:null, d2:d2v1], [d1:1, d2:null]]",
- * configMap.get("[d1:1, d2:d2v1]").subConfigs.toString());
- * </code></pre>
+ * Used to combine multi dimension, generate all permutation and combination
  */
 public class CombinationGenerator {
     /**
@@ -71,24 +55,7 @@ public class CombinationGenerator {
     /**
      * Generate all permutation and combination with dimensions.
      *
-     * <pre><code>
-     * List<List<String>> results = CombinationGenerator.generateSimple(
-     * Arrays.asList("1", "2"),
-     *  Arrays.asList("d2v1", "d2v2", null)
-     * ).collect(Collectors.toList());
-     *
-     * Assert.assertEquals(Arrays.asList(
-     *  Arrays.asList("1", "d2v1"),
-     *  Arrays.asList("2", "d2v1"),
-     *  Arrays.asList("1", "d2v2"),
-     *  Arrays.asList("2", "d2v2"),
-     *  Arrays.asList("1", null),
-     *  Arrays.asList("2", null)
-     * ), results);
-     * </code></pre>
-     *
-     * @param dimensions Only the dimension values</b>
-     * @param <K>        Dimension name type
+     * @param dimensions Only the dimension values
      * @param <V>        Dimension value type
      * @return Stream of permutation, each result is a list of dimension name and value.
      */
@@ -106,7 +73,6 @@ public class CombinationGenerator {
      * Generate all permutation and combination with dimensions. This method will auto add null to every dimension.
      *
      * @param dimensions The key is dimension name. The value is the dimension value range. <b>Do not add null to value range. This method will auto do it.</b>
-     * @param <K>        Dimension name type
      * @param <V>        Dimension value type
      * @return Stream of permutation, each result is a list of dimension name and value.
      */
