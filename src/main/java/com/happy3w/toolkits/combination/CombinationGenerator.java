@@ -122,11 +122,11 @@ public class CombinationGenerator {
         }
 
         public static <K, V> CombineSpliterator<K, V> of(List<Pair<K, List<V>>> dimensions) {
-            int maxSize = calcualteMaxSize(dimensions);
+            int maxSize = calculateMaxSize(dimensions);
             return new CombineSpliterator(dimensions, maxSize);
         }
 
-        private static <V, K> int calcualteMaxSize(List<Pair<K, List<V>>> dimensions) {
+        private static <V, K> int calculateMaxSize(List<Pair<K, List<V>>> dimensions) {
             int size = 1;
             for (Pair<K, List<V>> dimension : dimensions) {
                 size *= dimension.getValue().size();
