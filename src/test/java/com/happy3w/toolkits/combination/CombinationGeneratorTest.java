@@ -1,6 +1,6 @@
 package com.happy3w.toolkits.combination;
 
-import com.happy3w.toolkits.utils.ListUtils;
+import com.happy3w.toolkits.utils.MapUtils;
 import com.happy3w.toolkits.utils.Pair;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,33 +9,49 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CombinationGeneratorTest {
 
     @Test
     public void should_used_in_composite_scene_success() {
-        DimensionManager<String, String> dimensionManager = new DimensionManager<>(
-                Pair.ofList("d1", "1", "2"),
-                Pair.ofList("d2", "d2v1", "d2v2")
-        );
+        List<CombineDetail<String, String>> details = CombinationGenerator.<String, String>builder()
+                .dimension("d1", "1", "2")
+                .dimension("d2", "d2v1", "d2v2")
+                .withNullDimension(true)
+                .withOverRelation(true)
+                .build()
+                .generateDetail()
+                .collect(Collectors.toList());
 
-        Stream<List<Pair<String, String>>> combineResultStream = CombinationGenerator.generateExtWithNull(dimensionManager.getDimensions());
-        List<MyConfig> myConfigs = combineResultStream.map(r -> new MyConfig(r)).collect(Collectors.toList());
-
-        dimensionManager.createOverRelation(myConfigs, MyConfig::getDimensions, MyConfig::setSubConfigs);
+        Map<String, MyConfig> configMap = new HashMap<>();
+        List<MyConfig> myConfigs = details.stream()
+                .map(d -> createConfig(d, configMap))
+                .collect(Collectors.toList());
 
         Assert.assertEquals(3 * 3, myConfigs.size());
-        Map<String, MyConfig> configMap = ListUtils.toMap(myConfigs, MyConfig::getName);
         Assert.assertTrue(
                 Arrays.asList(
                         "[[d1:null, d2:d2v1], [d1:1, d2:null], [d1:null, d2:null]]",
                         "[[d1:1, d2:null], [d1:null, d2:d2v1], [d1:null, d2:null]]").contains(
                         configMap.get("[d1:1, d2:d2v1]").subConfigs.toString()
                 ));
+    }
+
+    private MyConfig createConfig(CombineDetail<String, String> detail, Map<String, MyConfig> configMap) {
+        String key = detail.getNormalResult().toString();
+        MyConfig config = MapUtils.safeRead(configMap, key, () -> new MyConfig(detail.getNormalResult()));
+        if (detail.getOveredCombines() == null) {
+            return config;
+        }
+        for (CombineDetail<String, String> overedDetail : detail.getOveredCombines()) {
+            String newKey = overedDetail.getNormalResult().toString();
+            config.getSubConfigs().add(MapUtils.safeRead(configMap, newKey, () -> new MyConfig(overedDetail.getNormalResult())));
+        }
+        return config;
     }
 
     @Getter
@@ -58,10 +74,12 @@ public class CombinationGeneratorTest {
 
     @Test
     public void should_generate_permutation_with_dimension_name_success() {
-        List<List<Pair<String, String>>> results = CombinationGenerator.generateExt(
-                Pair.ofList("d1", "1", "2"),
-                Pair.ofList("d2", "d2v1", "d2v2", null)
-        ).collect(Collectors.toList());
+        List<List<Pair<String, String>>> results = CombinationGenerator.<String, String>builder()
+                .dimension("d1", "1", "2")
+                .dimension("d2", "d2v1", "d2v2", null)
+                .build()
+                .generateNormal()
+                .collect(Collectors.toList());
         Assert.assertEquals(Arrays.asList(
                 Arrays.asList(Pair.of("d1", "1"), Pair.of("d2", "d2v1")),
                 Arrays.asList(Pair.of("d1", "2"), Pair.of("d2", "d2v1")),
@@ -74,10 +92,12 @@ public class CombinationGeneratorTest {
 
     @Test
     public void should_generate_permutation_without_dimension_name_success() {
-        List<List<String>> results = CombinationGenerator.generateSimple(
-                Arrays.asList("1", "2"),
-                Arrays.asList("d2v1", "d2v2", null)
-        ).collect(Collectors.toList());
+        List<List<String>> results = CombinationGenerator.<String, String>builder()
+                .dimension("d1", "1", "2")
+                .dimension("d2","d2v1", "d2v2", null)
+                .build()
+                .generateSimple()
+                .collect(Collectors.toList());
         Assert.assertEquals(Arrays.asList(
                 Arrays.asList("1", "d2v1"),
                 Arrays.asList("2", "d2v1"),

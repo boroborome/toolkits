@@ -1,10 +1,16 @@
 package com.happy3w.toolkits.combination;
 
+import com.happy3w.toolkits.utils.ListUtils;
 import com.happy3w.toolkits.utils.Pair;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
@@ -15,75 +21,97 @@ import java.util.stream.StreamSupport;
 /**
  * Used to combine multi dimension, generate all permutation and combination
  */
-public class CombinationGenerator {
-    /**
-     * Generate all permutation and combination with dimensions
-     *
-     * @param dimensions The key is dimension name. The value is the dimension value range. It accept null as legal dimension value.There should not contains same value in value range, but this method does not check it.
-     * @param <K>        Dimension name type
-     * @param <V>        Dimension value type
-     * @return Stream of permutation, each result is a list of dimension name and value.
-     */
-    public static <K, V> Stream<List<Pair<K, V>>> generateExt(Pair<K, List<V>>... dimensions) {
-        return generateExt(Arrays.asList(dimensions));
+@Getter
+@Setter
+public class CombinationGenerator<K, V> {
+    private List<Pair<K, List<V>>> dimensions = new ArrayList<>();
+    private boolean withNullDimension = false;
+    private boolean withOverRelation = false;
+    private final Map<String, Integer> weightMaskMap = new HashMap<>();
+
+    private void initWeightMask() {
+        int weightMask = 1;
+        for (Pair<K, List<V>> dimension : dimensions) {
+            for (V value : dimension.getValue()) {
+                String key = genWeightMaskKey(dimension.getKey(), value);
+                weightMaskMap.put(key, weightMask);
+                weightMask <<= 1;
+            }
+        }
     }
 
-    public static <K, V> Stream<List<Pair<K, V>>> generateExt(List<Pair<K, List<V>>> dimensions) {
+    private String genWeightMaskKey(K dimensionName, V dimensionValue) {
+        return MessageFormat.format("{0}-{1}", dimensionName, dimensionValue);
+    }
+
+    /**
+     * Generate combinations
+     * @return Stream of permutation, the score and mask is not initialized when withOverRelation=false
+     */
+    public Stream<CombineDetail<K, V>> generateDetail() {
+        Stream<CombineDetail<K, V>> detailStream = generateNormal()
+                .map(r -> new CombineDetail(r));
+        if (withOverRelation) {
+            return initOverRelation(detailStream);
+        }
+        return detailStream;
+    }
+
+    /**
+     * Generate combinations
+     * @return Stream of permutation, each result is a list of dimension name and value.
+     */
+    public Stream<List<Pair<K, V>>> generateNormal() {
+        List<Pair<K, List<V>>> dimensions = mayBeNullDimensions(this.dimensions, withNullDimension);
         return StreamSupport.stream(CombineSpliterator.of(dimensions), false);
     }
 
     /**
-     * Generate all permutation and combination with dimensions. This method will auto add null to every dimension.
-     *
-     * @param dimensions The key is dimension name. The value is the dimension value range. <b>Do not add null to value range. This method will auto do it.</b>
-     * @param <K>        Dimension name type
-     * @param <V>        Dimension value type
-     * @return Stream of permutation, each result is a list of dimension name and value.
+     * Generate combinations
+     * @return The result is only the value list, such as [['a1', 'b1'], ['a1', 'b2']...]
      */
-    public static <K, V> Stream<List<Pair<K, V>>> generateExtWithNull(Pair<K, List<V>>... dimensions) {
-        return generateExtWithNull(Arrays.asList(dimensions));
+    public Stream<List<V>> generateSimple() {
+        return generateNormal().map(r -> ListUtils.map(r, Pair::getValue));
     }
 
-    public static <K, V> Stream<List<Pair<K, V>>> generateExtWithNull(List<Pair<K, List<V>>> dimensions) {
-        return generateExt(dimensions.stream().map(dimensionItem -> {
-            List<V> newDimValues = new ArrayList<>(dimensionItem.getValue());
-            newDimValues.add(null);
-            return new Pair<>(dimensionItem.getKey(), newDimValues);
-        }).collect(Collectors.toList()));
+    private List<Pair<K, List<V>>> mayBeNullDimensions(List<Pair<K, List<V>>> dimensions, boolean withNullDimension) {
+        if (withNullDimension) {
+            return dimensions.stream().map(dimensionItem -> {
+                List<V> newDimValues = new ArrayList<>(dimensionItem.getValue());
+                newDimValues.add(null);
+                return new Pair<>(dimensionItem.getKey(), newDimValues);
+            }).collect(Collectors.toList());
+        }
+        return dimensions;
     }
 
-    /**
-     * Generate all permutation and combination with dimensions.
-     *
-     * @param dimensions Only the dimension values
-     * @param <V>        Dimension value type
-     * @return Stream of permutation, each result is a list of dimension name and value.
-     */
-    public static <V> Stream<List<V>> generateSimple(List<V>... dimensions) {
-        return generateExt(Arrays.asList(dimensions).stream()
-                .map(dvs -> new Pair<>("", dvs))
-                .collect(Collectors.toList())
-        ).map(extValue -> extValue.stream()
-                .map(pair -> pair.getValue())
-                .collect(Collectors.toList())
-        );
+    private Stream<CombineDetail<K, V>> initOverRelation(Stream<CombineDetail<K, V>> detailStream) {
+        List<CombineDetail<K, V>> detailList = detailStream.peek(this::initScoreAndMask)
+                .collect(Collectors.toList());
+        for (CombineDetail<K, V> curDetail : detailList) {
+            for (CombineDetail<K, V> overedDetail : detailList) {
+                if (curDetail.isOver(overedDetail)) {
+                    curDetail.addOveredCombine(overedDetail);
+                }
+            }
+        }
+        return detailList.stream();
     }
 
-    /**
-     * Generate all permutation and combination with dimensions. This method will auto add null to every dimension.
-     *
-     * @param dimensions The key is dimension name. The value is the dimension value range. <b>Do not add null to value range. This method will auto do it.</b>
-     * @param <V>        Dimension value type
-     * @return Stream of permutation, each result is a list of dimension name and value.
-     */
-    public static <V> Stream<List<V>> generateSimpleWithNull(List<V>... dimensions) {
-        return generateExtWithNull(Arrays.asList(dimensions).stream()
-                .map(dvs -> new Pair<>("", dvs))
-                .collect(Collectors.toList())
-        ).map(extValue -> extValue.stream()
-                .map(pair -> pair.getValue())
-                .collect(Collectors.toList())
-        );
+    public void initScoreAndMask(CombineDetail<K, V> combineDetail) {
+        int mask = 0;
+        int score = 0;
+        for (Pair<K, V> dimensionValue : combineDetail.getNormalResult()) {
+            if (dimensionValue.getValue() == null) {
+                continue;
+            }
+            String weightMaskKey = genWeightMaskKey(dimensionValue.getKey(), dimensionValue.getValue());
+            mask |= weightMaskMap.get(weightMaskKey);
+            score++;
+        }
+
+        combineDetail.setScore(score);
+        combineDetail.setMask(mask);
     }
 
     private static class CombineSpliterator<K, V> extends Spliterators.AbstractSpliterator<List<Pair<K, V>>> {
@@ -132,6 +160,63 @@ public class CombinationGenerator {
                 size *= dimension.getValue().size();
             }
             return size;
+        }
+    }
+
+    public static <K, V> CombinationGeneratorBuilder<K, V> builder() {
+        return new CombinationGeneratorBuilder<K, V>();
+    }
+
+    public static class CombinationGeneratorBuilder<K, V> {
+        private CombinationGenerator<K, V> generator = new CombinationGenerator<>();
+
+        /**
+         * Add a dimension
+         * @param dimensionName Dimension name, Must not be null
+         * @param values dimension values
+         * @return This builder
+         */
+        public CombinationGeneratorBuilder<K, V> dimension(K dimensionName, V... values) {
+            if (dimensionName == null) {
+                throw new UnsupportedOperationException("dimensionName can not be null.");
+            }
+            generator.dimensions.add(Pair.ofList(dimensionName, values));
+            return this;
+        }
+
+        /**
+         * Add some dimensions
+         * @param dimensions The key is dimension name. The value is the dimension value range. It accept null as legal dimension value.There should not contains same value in value range, but this method does not check it.
+         * @return This builder
+         */
+        public CombinationGeneratorBuilder<K, V> dimensions(List<Pair<K, List<V>>> dimensions) {
+            generator.dimensions.addAll(dimensions);
+            return this;
+        }
+
+        /**
+         * Config generator whether auto add null to dimension when generate Combine Result.
+         * @param withNull true means add null to result
+         * @return This builder
+         */
+        public CombinationGeneratorBuilder<K, V> withNullDimension(boolean withNull) {
+            generator.withNullDimension = withNull;
+            return this;
+        }
+
+        /**
+         * Config generator whether init CombineDetail.overCombines
+         * @param withOverRelation true means init CombineDetail.overCombines
+         * @return This builder
+         */
+        public CombinationGeneratorBuilder<K, V> withOverRelation(boolean withOverRelation) {
+            generator.withOverRelation = withOverRelation;
+            return this;
+        }
+
+        public CombinationGenerator<K, V> build() {
+            generator.initWeightMask();
+            return generator;
         }
     }
 }
