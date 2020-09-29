@@ -1,12 +1,13 @@
 
-apply plugin: 'java'
-
 group = 'com.happy3w'
 version = '0.0.1'
-sourceCompatibility = '1.8'
 ext {
 	artifactId = "toolkits"
 }
+
+apply plugin: 'java-library'
+
+sourceCompatibility = '1.8'
 
 repositories {
 	mavenCentral()
