@@ -9,23 +9,21 @@
 ### combination 组件
 
 ```java
-// 定义需要使用的维度
-DimensionManager<String, String> dimensionManager = new DimensionManager<>(
-        Pair.ofList("d1", "1", "2"),			// 定义d1维度有两个值
-        Pair.ofList("d2", "d2v1", "d2v2")	// 定义d2维度有两个值
-);
+List<CombineDetail<String, String>> details = CombinationGenerator.<String, String>builder()
+        .dimension("d1", "1", "2")          // 配置维度d1，名称不可省略，不可为空
+        .dimension("d2", "d2v1", "d2v2")    // 配置维度d2
+        .withNullDimension(true)            // 排列组合时，各个维度都增加null值
+        .withOverRelation(true)             // 结果中增加over关系的计算
+        .build()
+        .generateDetail()                   // 枚举所有结果
+        .collect(Collectors.toList());
 
-// 枚举所有组合，WithNull的方法将null作为一个有效值添加到组合中
-Stream<List<Pair<String, String>>> combineResultStream = CombinationGenerator.generateExtWithNull(dimensionManager.getDimensions());
-
-// 生成自己的配置信息
-List<MyConfig> myConfigs = combineResultStream.map(r -> new MyConfig(r)).collect(Collectors.toList());
-
-// 根据维度的Over关系在配置上创建关联
-dimensionManager.createOverRelation(myConfigs, MyConfig::getDimensions, MyConfig::setSubConfigs);
+Map<String, MyConfig> configMap = new HashMap<>();
+List<MyConfig> myConfigs = details.stream()
+        .map(d -> createConfig(d, configMap))   // 将返回结果映射为自己的配置信息
+        .collect(Collectors.toList());
 
 Assert.assertEquals(3 * 3, myConfigs.size());
-Map<String, MyConfig> configMap = ListUtils.toMap(myConfigs, MyConfig::getName);
 Assert.assertTrue(
         Arrays.asList(
                 "[[d1:null, d2:d2v1], [d1:1, d2:null], [d1:null, d2:null]]",
