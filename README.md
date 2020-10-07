@@ -1,4 +1,24 @@
 # toolkits
+ 
+Quick Start
+-----------
+## Maven/Gradle configuration
+
+Add the Maven dependency:
+
+```xml
+<dependency>
+    <groupId>com.happy3w</groupId>
+    <artifactId>toolkits</artifactId>
+    <version>0.0.2</version>
+</dependency>
+```
+
+Add the Gradle dependency:
+
+```groovy
+implementation 'com.happy3w:toolkits:0.0.2'
+```
 
 ## 组件介绍
 
