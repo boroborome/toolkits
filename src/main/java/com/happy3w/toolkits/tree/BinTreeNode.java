@@ -47,9 +47,13 @@ public class BinTreeNode<T> {
         return head;
     }
 
-    public String serialize(Function<T, String> dataConvertor) {
+    public static <T> String serialize(BinTreeNode<T> head, Function<T, String> dataConvertor) {
+        if (head == null) {
+            return null;
+        }
+
         StringBuilder builder = new StringBuilder();
-        serialize(dataConvertor, String::valueOf, item -> {
+        head.serialize(dataConvertor, String::valueOf, item -> {
             builder.append(item);
             builder.append(',');
         });
@@ -64,16 +68,20 @@ public class BinTreeNode<T> {
                 shape -> itemCollector.accept(shapeConvertor.apply(shape)));
     }
 
-    public static <T> BinTreeNode<T> deserialize(Function<String, T> dataConvertor, String encodeStr) {
-        BinTreeNode<T> head = new BinTreeNode<>();
+    public static <T> BinTreeNode<T> deserialize(String encodeStr, Function<String, T> dataConvertor) {
         StringTokenizer tokenizer = new StringTokenizer(encodeStr, ",");
-        head.deserialize(dataConvertor, Boolean::parseBoolean, tokenizer::nextToken);
+        if (!tokenizer.hasMoreElements()) {
+            return null;
+        }
+
+        BinTreeNode<T> head = new BinTreeNode<>();
+        head.deserialize(tokenizer::nextToken, dataConvertor, Boolean::parseBoolean);
         return head;
     }
 
-    public <K> void deserialize(Function<K, T> dataConvertor,
-                                Function<K, Boolean> shapeConvertor,
-                                Supplier<K> itemSupplier) {
+    public <K> void deserialize(Supplier<K> itemSupplier,
+                                Function<K, T> dataConvertor,
+                                Function<K, Boolean> shapeConvertor) {
         buildTree(() -> dataConvertor.apply(itemSupplier.get()),
                 () -> shapeConvertor.apply(itemSupplier.get()));
     }
