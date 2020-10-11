@@ -23,4 +23,12 @@ public class BinTreeNodeTest {
         List<Boolean> newShapeDesc = head.toShapeDesc();
         Assert.assertEquals(shapeDesc, newShapeDesc);
     }
+
+    @Test
+    public void should_serialize_value_success() {
+        String encodeStr = "1,true,true,2,false,false,3,true,true,4,false,false,5,false,false";
+        BinTreeNode head = BinTreeNode.deserialize(Integer::parseInt, encodeStr);
+        String newEncodeStr = head.serialize(String::valueOf);
+        Assert.assertEquals(encodeStr, newEncodeStr);
+    }
 }
