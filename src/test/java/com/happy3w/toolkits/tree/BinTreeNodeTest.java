@@ -10,18 +10,18 @@ public class BinTreeNodeTest {
 
     @Test
     public void should_serialize_shape_1_success() {
-        List<Boolean> shapeDesc = Arrays.asList(true, true, false, false, false, false);
+        boolean[] shapeDesc = new boolean[]{true, true, false, false, false, false};
         BinTreeNode head = BinTreeNode.from(shapeDesc);
-        List<Boolean> newShapeDesc = head.toShapeDesc();
-        Assert.assertEquals(shapeDesc, newShapeDesc);
+        boolean[] newShapeDesc = head.toShapeDesc();
+        Assert.assertArrayEquals(shapeDesc, newShapeDesc);
     }
 
     @Test
     public void should_serialize_shape_2_success() {
-        List<Boolean> shapeDesc = Arrays.asList(true, false, true, false, false, false);
+        boolean[] shapeDesc = new boolean[]{true, false, true, false, false, false};
         BinTreeNode head = BinTreeNode.from(shapeDesc);
-        List<Boolean> newShapeDesc = head.toShapeDesc();
-        Assert.assertEquals(shapeDesc, newShapeDesc);
+        boolean[] newShapeDesc = head.toShapeDesc();
+        Assert.assertArrayEquals(shapeDesc, newShapeDesc);
     }
 
     @Test

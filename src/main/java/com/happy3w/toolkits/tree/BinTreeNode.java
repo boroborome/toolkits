@@ -1,5 +1,6 @@
 package com.happy3w.toolkits.tree;
 
+import com.happy3w.toolkits.utils.ArrayUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,15 +36,15 @@ public class BinTreeNode<T> {
         return left == null && right == null;
     }
 
-    public List<Boolean> toShapeDesc() {
+    public boolean[] toShapeDesc() {
         List<Boolean> shapeDesc = new ArrayList<>();
         visitTree(null, shapeDesc::add);
-        return shapeDesc;
+        return ArrayUtils.toBooleanArray(shapeDesc);
     }
 
-    public static BinTreeNode from(List<Boolean> shapeDesc) {
+    public static BinTreeNode from(boolean[] shapeDesc) {
         BinTreeNode head = new BinTreeNode();
-        head.buildTree(null, shapeDesc.iterator()::next);
+        head.buildTree(null, ArrayUtils.toBooleanList(shapeDesc).iterator()::next);
         return head;
     }
 
@@ -69,6 +70,9 @@ public class BinTreeNode<T> {
     }
 
     public static <T> BinTreeNode<T> deserialize(String encodeStr, Function<String, T> dataConvertor) {
+        if (encodeStr == null || encodeStr.isEmpty()) {
+            return null;
+        }
         StringTokenizer tokenizer = new StringTokenizer(encodeStr, ",");
         if (!tokenizer.hasMoreElements()) {
             return null;
