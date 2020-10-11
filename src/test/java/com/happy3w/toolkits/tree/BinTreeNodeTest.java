@@ -3,9 +3,6 @@ package com.happy3w.toolkits.tree;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class BinTreeNodeTest {
 
     @Test
