@@ -6,7 +6,7 @@ ext {
 }
 
 apply plugin: 'java-library'
-apply from: 'maven-publish.gradle'
+//apply from: 'maven-publish.gradle'
 
 sourceCompatibility = '1.8'
 
