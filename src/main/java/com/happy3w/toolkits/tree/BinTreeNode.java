@@ -138,4 +138,20 @@ public class BinTreeNode<T> {
             }
         }
     }
+
+    public void visitNode(Consumer<BinTreeNode<T>> nodeVisitor) {
+        Stack<BinTreeNode<T>> nodeStack = new Stack<>();
+        nodeStack.push(this);
+        while (!nodeStack.isEmpty()) {
+            BinTreeNode<T> node = nodeStack.pop();
+            nodeVisitor.accept(node);
+
+            if (node.right != null) {
+                nodeStack.push(node.right);
+            }
+            if (node.left != null) {
+                nodeStack.push(node.left);
+            }
+        }
+    }
 }

@@ -1,11 +1,12 @@
 
 group = 'com.happy3w'
-version = '0.0.1'
+version = '0.0.3'
 ext {
 	artifactId = "toolkits"
 }
 
 apply plugin: 'java-library'
+apply from: 'maven-publish.gradle'
 
 sourceCompatibility = '1.8'
 
