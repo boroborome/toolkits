@@ -20,7 +20,6 @@ public class Point24Test {
     @Test
     public void test24() {
         IExpression[] valueExps = new IExpression[]{
-                new ConstExpression(2),
                 new ConstExpression(3),
                 new ConstExpression(4),
                 new ConstExpression(5),
@@ -28,8 +27,7 @@ public class Point24Test {
         };
 
         TreeEnumerator.enumFullBinTree(valueExps.length * 2 - 1)
-                .map(head -> new TreeWrapper(BinTreeNode.from(head)))
-                .flatMap(wrapper -> enumOperator(wrapper, valueExps.length - 1))
+                .flatMap(head -> enumOperator(head, valueExps.length - 1))
                 .flatMap(meta -> enumConstValue(meta, valueExps))
                 .filter(meta -> checkValue(meta, 24))
                 .forEach(meta -> System.out.println(toExpStr(meta.wrapper.exp)));
@@ -47,40 +45,45 @@ public class Point24Test {
     }
 
     private boolean checkValue(FinalExpressionMeta meta, int expectValue) {
-        fillExp(meta.opers, meta.wrapper.operNodes);
-        fillExp(meta.values, meta.wrapper.valueNodes);
+        fillExpToNode(meta.opers, meta.wrapper.operNodes);
+        fillExpToNode(meta.values, meta.wrapper.valueNodes);
 
         BinTreeNode<IExpression> expTree = meta.wrapper.exp;
         return expTree.getData().getValue(expTree) == expectValue;
     }
 
-    private void fillExp(List<IExpression> opers, List<BinTreeNode<IExpression>> operNodes) {
+    private void fillExpToNode(List<IExpression> opers, List<BinTreeNode<IExpression>> operNodes) {
         for (int i = operNodes.size() - 1; i >= 0; i --) {
             operNodes.get(i).setData(opers.get(i));
         }
     }
 
-    private Stream<FinalExpressionMeta> enumOperator(TreeWrapper wrapper, int operCount) {
+    private Stream<FinalExpressionMeta> enumOperator(boolean[] expShape, int operCount) {
+        ExpShapeWrapper shapeWrapper = new ExpShapeWrapper(BinTreeNode.from(expShape));
+
         List<IExpression> operatorRange = Arrays.asList(new AddOperator(), new DelOperator(), new MultOperator(), new DivOperator());
         List<Pair<String, List<IExpression>>> dimensions = new ArrayList<>();
         for (int i = 0; i < operCount; i++) {
             dimensions.add(new Pair<>("d" + i, operatorRange));
         }
         return CombinationGenerator.<String, IExpression>builder()
-                .dimensions(dimensions)
-                .build().generateSimple()
-                .map(opers -> newWrapper(wrapper, opers));
+                .dimensions(dimensions).build()
+                .generateSimple()
+                .map(opers -> new FinalExpressionMeta(shapeWrapper, opers));
     }
 
     private static class FinalExpressionMeta {
-        private TreeWrapper wrapper;
+        private ExpShapeWrapper wrapper;
         private List<IExpression> opers;
         private List<IExpression> values;
 
+        public FinalExpressionMeta(ExpShapeWrapper wrapper, List<IExpression> opers) {
+            this.wrapper = wrapper;
+            this.opers = opers;
+        }
+
         public FinalExpressionMeta cloneMeta() {
-            FinalExpressionMeta meta = new FinalExpressionMeta();
-            meta.wrapper = wrapper;
-            meta.opers = opers;
+            FinalExpressionMeta meta = new FinalExpressionMeta(wrapper, opers);
             meta.values = values;
             return meta;
         }
@@ -91,25 +94,18 @@ public class Point24Test {
         }
     }
 
-    private FinalExpressionMeta newWrapper(TreeWrapper wrapper, List<IExpression> opers) {
-        FinalExpressionMeta meta = new FinalExpressionMeta();
-        meta.wrapper = wrapper;
-        meta.opers = opers;
-        return meta;
-    }
-
     private Stream<FinalExpressionMeta> enumConstValue(FinalExpressionMeta expMeta, IExpression[] valueNodes) {
         return new PermutationGenerator<>(valueNodes)
                 .generate()
                 .map(values -> expMeta.cloneMeta().withValues(values));
     }
 
-    private static class TreeWrapper {
+    private static class ExpShapeWrapper {
         private BinTreeNode<IExpression> exp;
         private List<BinTreeNode<IExpression>> operNodes;
         private List<BinTreeNode<IExpression>> valueNodes;
 
-        public TreeWrapper(BinTreeNode<IExpression> exp) {
+        public ExpShapeWrapper(BinTreeNode<IExpression> exp) {
             this.exp = exp;
             operNodes = new ArrayList<>();
             valueNodes = new ArrayList<>();
