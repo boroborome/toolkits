@@ -13,13 +13,14 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 public class Point24Test {
 
     private static final boolean ACCEPT_DECIMAL = false;
     private static final boolean FILTER_SWITCH = true;
-    private static final boolean ACCEPT_NEGATIVE = false;
+    private static final boolean ACCEPT_NEGATIVE = true;
 
     @Test
     public void test24() {
@@ -30,11 +31,14 @@ public class Point24Test {
                 new ConstExpression(8),
         };
 
+        AtomicInteger counter = new AtomicInteger(0);
         TreeEnumerator.enumFullBinTree(valueExps.length * 2 - 1)
                 .flatMap(head -> enumOperator(head, valueExps.length - 1))
                 .flatMap(meta -> enumConstValue(meta, valueExps))
+                .peek(meta -> counter.incrementAndGet())
                 .filter(meta -> checkValue(meta, 24))
                 .forEach(meta -> System.out.println(toExpStr(meta.wrapper.exp)));
+        System.out.println(counter.get());
     }
 
     private String toExpStr(BinTreeNode<IExpression> expTree) {
@@ -145,14 +149,25 @@ public class Point24Test {
             return node.getData().getValue(node);
         }
 
+        private boolean validateValue(double value) {
+            if (Double.isInfinite(value)) {
+                return false;
+            }
+            if (!ACCEPT_NEGATIVE && value < 0) {
+                return false;
+            }
+            return true;
+        }
+
         public double getValue(BinTreeNode<IExpression> self) {
             double left = getNodeValue(self.getLeft());
-            if (Double.isInfinite(left)) {
-                return left;
+            if (!validateValue(left)) {
+                return Double.POSITIVE_INFINITY;
             }
+
             double right = getNodeValue(self.getRight());
-            if (Double.isInfinite(right)) {
-                return left;
+            if (!validateValue(right)) {
+                return Double.POSITIVE_INFINITY;
             }
 
             return calculate(left, right);
