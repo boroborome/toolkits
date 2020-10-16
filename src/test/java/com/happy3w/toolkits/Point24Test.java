@@ -18,14 +18,15 @@ import java.util.stream.Stream;
 public class Point24Test {
 
     private static final boolean ACCEPT_DECIMAL = false;
+    private static final boolean FILTER_SWITCH = true;
     private static final boolean ACCEPT_NEGATIVE = false;
 
     @Test
     public void test24() {
         IExpression[] valueExps = new IExpression[]{
-                new ConstExpression(3),
-                new ConstExpression(8),
-                new ConstExpression(3),
+                new ConstExpression(7),
+                new ConstExpression(1),
+                new ConstExpression(4),
                 new ConstExpression(8),
         };
 
@@ -171,6 +172,9 @@ public class Point24Test {
 
         @Override
         public double calculate(double left, double right) {
+            if (FILTER_SWITCH && left > right) {
+                return Double.POSITIVE_INFINITY;
+            }
             return left + right;
         }
     }
@@ -193,6 +197,10 @@ public class Point24Test {
 
         @Override
         public double calculate(double left, double right) {
+            if (FILTER_SWITCH && left > right) {
+                return Double.POSITIVE_INFINITY;
+            }
+
             return left * right;
         }
     }
