@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 public class Point24Test {
 
-    private static final boolean ACCEPT_DECIMAL = false;
+    private static final boolean ACCEPT_DECIMAL = true;
     private static final boolean FILTER_SWITCH = true;
     private static final boolean ACCEPT_NEGATIVE = true;
 
@@ -235,7 +235,8 @@ public class Point24Test {
             if (ACCEPT_DECIMAL) {
                 return v;
             }
-            if (!doubleEqual(v * right, left)) {
+
+            if (v != (int) v) {
                 return Double.POSITIVE_INFINITY;
             }
             return v;
