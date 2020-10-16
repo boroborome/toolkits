@@ -1,7 +1,7 @@
 package com.happy3w.toolkits;
 
 import com.happy3w.toolkits.combination.CombinationGenerator;
-import com.happy3w.toolkits.permutation.PermutationGenerator;
+import com.happy3w.toolkits.permutation.DuplicatedPermutationGenerator;
 import com.happy3w.toolkits.tree.BinTreeNode;
 import com.happy3w.toolkits.tree.TreeEnumerator;
 import com.happy3w.toolkits.utils.Pair;
@@ -18,17 +18,17 @@ import java.util.stream.Stream;
 
 public class Point24Test {
 
-    private static final boolean ACCEPT_DECIMAL = true;
+    private static final boolean ACCEPT_DECIMAL = false;
     private static final boolean FILTER_SWITCH = true;
-    private static final boolean ACCEPT_NEGATIVE = true;
+    private static final boolean ACCEPT_NEGATIVE = false;
 
     @Test
     public void test24() {
         IExpression[] valueExps = new IExpression[]{
-                new ConstExpression(7),
-                new ConstExpression(1),
-                new ConstExpression(4),
-                new ConstExpression(8),
+                new ConstExpression(6),
+                new ConstExpression(6),
+                new ConstExpression(6),
+                new ConstExpression(6),
         };
 
         AtomicInteger counter = new AtomicInteger(0);
@@ -68,7 +68,7 @@ public class Point24Test {
     }
 
     private void fillExpToNode(List<IExpression> opers, List<BinTreeNode<IExpression>> operNodes) {
-        for (int i = operNodes.size() - 1; i >= 0; i --) {
+        for (int i = operNodes.size() - 1; i >= 0; i--) {
             operNodes.get(i).setData(opers.get(i));
         }
     }
@@ -110,7 +110,9 @@ public class Point24Test {
     }
 
     private Stream<FinalExpressionMeta> enumConstValue(FinalExpressionMeta expMeta, IExpression[] valueNodes) {
-        return new PermutationGenerator<>(valueNodes)
+        return new DuplicatedPermutationGenerator<>(valueNodes,
+                (a, b) ->
+                        ((ConstExpression) a).value == ((ConstExpression) b).value)
                 .generate()
                 .map(values -> expMeta.cloneMeta().withValues(values));
     }
@@ -141,6 +143,7 @@ public class Point24Test {
     @Getter
     public static abstract class OperatorExpression implements IExpression {
         protected final char operator;
+
         public OperatorExpression(char operator) {
             this.operator = operator;
         }
@@ -247,6 +250,7 @@ public class Point24Test {
     @Setter
     public static class ConstExpression implements IExpression {
         private double value;
+
         public ConstExpression(double value) {
             this.value = value;
         }

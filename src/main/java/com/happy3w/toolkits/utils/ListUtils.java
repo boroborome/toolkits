@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -226,5 +227,15 @@ public class ListUtils {
 
     public static boolean isEmpty(Map<?, ?> map) {
         return map == null || map.isEmpty();
+    }
+
+    public static <T> int indexOf(List<T> values, T value, BiPredicate<T, T> equalChecker) {
+        for (int index = values.size() - 1; index >= 0; --index) {
+            T existValue = values.get(index);
+            if (equalChecker.test(existValue, value)) {
+                return index;
+            }
+        }
+        return -1;
     }
 }
