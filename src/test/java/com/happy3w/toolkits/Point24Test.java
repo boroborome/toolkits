@@ -17,13 +17,16 @@ import java.util.stream.Stream;
 
 public class Point24Test {
 
+    private static final boolean ACCEPT_DECIMAL = false;
+    private static final boolean ACCEPT_NEGATIVE = false;
+
     @Test
     public void test24() {
         IExpression[] valueExps = new IExpression[]{
                 new ConstExpression(3),
-                new ConstExpression(4),
-                new ConstExpression(5),
-                new ConstExpression(6),
+                new ConstExpression(8),
+                new ConstExpression(3),
+                new ConstExpression(8),
         };
 
         TreeEnumerator.enumFullBinTree(valueExps.length * 2 - 1)
@@ -44,12 +47,19 @@ public class Point24Test {
         }
     }
 
-    private boolean checkValue(FinalExpressionMeta meta, int expectValue) {
+    private static boolean doubleEqual(double a, double b) {
+        if (Double.isInfinite(a) || Double.isInfinite(b)) {
+            return false;
+        }
+        return Math.abs(a - b) < 0.0000001d;
+    }
+
+    private boolean checkValue(FinalExpressionMeta meta, double expectValue) {
         fillExpToNode(meta.opers, meta.wrapper.operNodes);
         fillExpToNode(meta.values, meta.wrapper.valueNodes);
 
         BinTreeNode<IExpression> expTree = meta.wrapper.exp;
-        return expTree.getData().getValue(expTree) == expectValue;
+        return doubleEqual(expTree.getData().getValue(expTree), expectValue);
     }
 
     private void fillExpToNode(List<IExpression> opers, List<BinTreeNode<IExpression>> operNodes) {
@@ -120,7 +130,7 @@ public class Point24Test {
     }
 
     public interface IExpression {
-        int getValue(BinTreeNode<IExpression> self);
+        double getValue(BinTreeNode<IExpression> self);
     }
 
     @Getter
@@ -130,23 +140,24 @@ public class Point24Test {
             this.operator = operator;
         }
 
-        protected int getNodeValue(BinTreeNode<IExpression> node) {
+        protected double getNodeValue(BinTreeNode<IExpression> node) {
             return node.getData().getValue(node);
         }
 
-        public int getValue(BinTreeNode<IExpression> self) {
-            int left = getNodeValue(self.getLeft());
-            if (left < 0) {
-                return -1;
+        public double getValue(BinTreeNode<IExpression> self) {
+            double left = getNodeValue(self.getLeft());
+            if (Double.isInfinite(left)) {
+                return left;
             }
-            int right = getNodeValue(self.getRight());
-            if (right < 0) {
-                return -1;
+            double right = getNodeValue(self.getRight());
+            if (Double.isInfinite(right)) {
+                return left;
             }
+
             return calculate(left, right);
         }
 
-        protected abstract int calculate(int left, int right);
+        protected abstract double calculate(double left, double right);
 
         public String toString() {
             return String.valueOf(operator);
@@ -159,7 +170,7 @@ public class Point24Test {
         }
 
         @Override
-        public int calculate(int left, int right) {
+        public double calculate(double left, double right) {
             return left + right;
         }
     }
@@ -170,7 +181,7 @@ public class Point24Test {
         }
 
         @Override
-        public int calculate(int left, int right) {
+        public double calculate(double left, double right) {
             return left - right;
         }
     }
@@ -181,7 +192,7 @@ public class Point24Test {
         }
 
         @Override
-        public int calculate(int left, int right) {
+        public double calculate(double left, double right) {
             return left * right;
         }
     }
@@ -192,14 +203,17 @@ public class Point24Test {
         }
 
         @Override
-        public int calculate(int left, int right) {
+        public double calculate(double left, double right) {
             if (right == 0) {
-                return -1;
+                return Double.POSITIVE_INFINITY;
             }
 
-            int v = left / right;
-            if (v * right != left) {
-                return -1;
+            double v = left / right;
+            if (ACCEPT_DECIMAL) {
+                return v;
+            }
+            if (!doubleEqual(v * right, left)) {
+                return Double.POSITIVE_INFINITY;
             }
             return v;
         }
@@ -208,18 +222,18 @@ public class Point24Test {
     @Getter
     @Setter
     public static class ConstExpression implements IExpression {
-        private int value;
-        public ConstExpression(int value) {
+        private double value;
+        public ConstExpression(double value) {
             this.value = value;
         }
 
         @Override
-        public int getValue(BinTreeNode<IExpression> self) {
+        public double getValue(BinTreeNode<IExpression> self) {
             return value;
         }
 
         public String toString() {
-            return String.valueOf(value);
+            return String.valueOf((int) value);
         }
     }
 }
