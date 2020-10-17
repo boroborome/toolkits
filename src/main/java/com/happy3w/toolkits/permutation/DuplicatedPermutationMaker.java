@@ -1,11 +1,8 @@
 package com.happy3w.toolkits.permutation;
 
-import com.happy3w.toolkits.utils.ListUtils;
+import com.happy3w.toolkits.utils.IndexMapper;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Spliterators;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -13,54 +10,17 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class DuplicatedPermutationMaker<T> {
-    private int baseValueSize;
-    private T[] metaValues;
-    private int[] metaCounts;
+    private IndexMapper<T> mapper;
 
 
     public DuplicatedPermutationMaker(T[] baseValues, BiPredicate<T, T> equalChecker) {
-        int[] itemCountsTemp = new int[baseValues.length];
-        Arrays.fill(itemCountsTemp, 1);
-        List<T> collectValues = new ArrayList<>();
-        for (T value : baseValues) {
-            int index = ListUtils.indexOf(collectValues, value, equalChecker);
-            if (index >= 0) {
-                itemCountsTemp[index]++;
-            } else {
-                collectValues.add(value);
-            }
-        }
-
-        this.baseValueSize = baseValues.length;
-        this.metaValues = (T[]) Array.newInstance(baseValues.getClass().getComponentType(), collectValues.size());
-        this.metaValues = collectValues.toArray(this.metaValues);
-        this.metaCounts = Arrays.copyOf(itemCountsTemp, metaValues.length);
+        mapper = new IndexMapper<>(baseValues, equalChecker);
     }
 
     public Stream<T[]> generate() {
-        int[] startValues = createStartValues(metaCounts);
+        int[] startValues = mapper.createStartValues();
         return StreamSupport.stream(new PermutationSpliterator(startValues), false)
-                .map(this::convertValues);
-    }
-
-    private T[] convertValues(int[] indexes) {
-        int size = indexes.length;
-        T[] values = (T[]) Array.newInstance(metaValues.getClass().getComponentType(), size);
-        for (int i = 0; i < size; i++) {
-            values[i] = metaValues[indexes[i]];
-        }
-        return values;
-    }
-
-    private int[] createStartValues(int[] itemCounts) {
-        int[] startValues = new int[baseValueSize];
-        for (int curIndex = 0, itemIndex = 0; itemIndex < itemCounts.length; itemIndex++) {
-            int count = itemCounts[itemIndex];
-            Arrays.fill(startValues, curIndex, curIndex + count, itemIndex);
-            curIndex += count;
-        }
-
-        return startValues;
+                .map(mapper::convertValues);
     }
 
     private static class PermutationSpliterator extends Spliterators.AbstractSpliterator<int[]> {
