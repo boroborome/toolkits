@@ -12,13 +12,13 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class DuplicatedPermutationGenerator<T> {
+public class DuplicatedPermutationMaker<T> {
     private int baseValueSize;
     private T[] metaValues;
     private int[] metaCounts;
 
 
-    public DuplicatedPermutationGenerator(T[] baseValues, BiPredicate<T, T> equalChecker) {
+    public DuplicatedPermutationMaker(T[] baseValues, BiPredicate<T, T> equalChecker) {
         int[] itemCountsTemp = new int[baseValues.length];
         Arrays.fill(itemCountsTemp, 1);
         List<T> collectValues = new ArrayList<>();

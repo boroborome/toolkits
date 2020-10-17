@@ -29,7 +29,7 @@ implementation 'com.happy3w:toolkits:0.0.2'
 ### combination 组件
 
 ```java
-List<CombineDetail<String, String>> details = CombinationGenerator.<String, String>builder()
+List<DimCombineDetail<String, String>> details = DimCombinationGenerator.<String, String>builder()
         .dimension("d1", "1", "2")          // 配置维度d1，名称不可省略，不可为空
         .dimension("d2", "d2v1", "d2v2")    // 配置维度d2
         .withNullDimension(true)            // 排列组合时，各个维度都增加null值

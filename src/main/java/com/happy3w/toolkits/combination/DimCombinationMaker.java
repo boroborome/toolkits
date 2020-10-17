@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,7 @@ import java.util.stream.StreamSupport;
  */
 @Getter
 @Setter
-public class CombinationGenerator<K, V> {
+public class DimCombinationMaker<K, V> {
     private List<Pair<K, List<V>>> dimensions = new ArrayList<>();
     private boolean withNullDimension = false;
     private boolean withOverRelation = false;
@@ -48,9 +47,9 @@ public class CombinationGenerator<K, V> {
      * Generate combinations
      * @return Stream of permutation, the score and mask is not initialized when withOverRelation=false
      */
-    public Stream<CombineDetail<K, V>> generateDetail() {
-        Stream<CombineDetail<K, V>> detailStream = generateNormal()
-                .map(r -> new CombineDetail(r));
+    public Stream<DimCombineDetail<K, V>> generateDetail() {
+        Stream<DimCombineDetail<K, V>> detailStream = generateNormal()
+                .map(r -> new DimCombineDetail(r));
         if (withOverRelation) {
             return initOverRelation(detailStream);
         }
@@ -85,11 +84,11 @@ public class CombinationGenerator<K, V> {
         return dimensions;
     }
 
-    private Stream<CombineDetail<K, V>> initOverRelation(Stream<CombineDetail<K, V>> detailStream) {
-        List<CombineDetail<K, V>> detailList = detailStream.peek(this::initScoreAndMask)
+    private Stream<DimCombineDetail<K, V>> initOverRelation(Stream<DimCombineDetail<K, V>> detailStream) {
+        List<DimCombineDetail<K, V>> detailList = detailStream.peek(this::initScoreAndMask)
                 .collect(Collectors.toList());
-        for (CombineDetail<K, V> curDetail : detailList) {
-            for (CombineDetail<K, V> overedDetail : detailList) {
+        for (DimCombineDetail<K, V> curDetail : detailList) {
+            for (DimCombineDetail<K, V> overedDetail : detailList) {
                 if (curDetail.isOver(overedDetail)) {
                     curDetail.addOveredCombine(overedDetail);
                 }
@@ -98,10 +97,10 @@ public class CombinationGenerator<K, V> {
         return detailList.stream();
     }
 
-    public void initScoreAndMask(CombineDetail<K, V> combineDetail) {
+    public void initScoreAndMask(DimCombineDetail<K, V> dimCombineDetail) {
         int mask = 0;
         int score = 0;
-        for (Pair<K, V> dimensionValue : combineDetail.getNormalResult()) {
+        for (Pair<K, V> dimensionValue : dimCombineDetail.getNormalResult()) {
             if (dimensionValue.getValue() == null) {
                 continue;
             }
@@ -110,8 +109,8 @@ public class CombinationGenerator<K, V> {
             score++;
         }
 
-        combineDetail.setScore(score);
-        combineDetail.setMask(mask);
+        dimCombineDetail.setScore(score);
+        dimCombineDetail.setMask(mask);
     }
 
     private static class CombineSpliterator<K, V> extends Spliterators.AbstractSpliterator<List<Pair<K, V>>> {
@@ -168,7 +167,7 @@ public class CombinationGenerator<K, V> {
     }
 
     public static class CombinationGeneratorBuilder<K, V> {
-        private CombinationGenerator<K, V> generator = new CombinationGenerator<>();
+        private DimCombinationMaker<K, V> generator = new DimCombinationMaker<>();
 
         /**
          * Add a dimension
@@ -214,7 +213,7 @@ public class CombinationGenerator<K, V> {
             return this;
         }
 
-        public CombinationGenerator<K, V> build() {
+        public DimCombinationMaker<K, V> build() {
             generator.initWeightMask();
             return generator;
         }

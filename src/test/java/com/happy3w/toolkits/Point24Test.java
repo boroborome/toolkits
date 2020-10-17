@@ -1,7 +1,7 @@
 package com.happy3w.toolkits;
 
-import com.happy3w.toolkits.combination.CombinationGenerator;
-import com.happy3w.toolkits.permutation.DuplicatedPermutationGenerator;
+import com.happy3w.toolkits.combination.DimCombinationMaker;
+import com.happy3w.toolkits.permutation.DuplicatedPermutationMaker;
 import com.happy3w.toolkits.tree.BinTreeNode;
 import com.happy3w.toolkits.tree.TreeEnumerator;
 import com.happy3w.toolkits.utils.Pair;
@@ -80,7 +80,7 @@ public class Point24Test {
         for (int i = 0; i < operCount; i++) {
             dimensions.add(new Pair<>("d" + i, operatorRange));
         }
-        return CombinationGenerator.<String, IExpression>builder()
+        return DimCombinationMaker.<String, IExpression>builder()
                 .dimensions(dimensions).build()
                 .generateSimple()
                 .map(opers -> new FinalExpressionMeta(shapeWrapper, opers));
@@ -114,7 +114,7 @@ public class Point24Test {
             valueNodes[i] = new ConstExpression(constValues[i]);
         }
 
-        return new DuplicatedPermutationGenerator<>(valueNodes, (a, b) ->
+        return new DuplicatedPermutationMaker<>(valueNodes, (a, b) ->
                     ((ConstExpression) a).value == ((ConstExpression) b).value)
                 .generate()
                 .map(values -> expMeta.cloneMeta().withValues(values));

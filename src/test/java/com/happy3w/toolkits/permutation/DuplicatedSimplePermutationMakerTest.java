@@ -7,11 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DuplicatedPermutationGeneratorTest {
+public class DuplicatedSimplePermutationMakerTest {
 
     @Test
     public void should_gen_no_duplicate_success() {
-        List<List<String>> results = new DuplicatedPermutationGenerator<>(new String[]{"1", "2", "3"}, String::equals)
+        List<List<String>> results = new DuplicatedPermutationMaker<>(new String[]{"1", "2", "3"}, String::equals)
                 .generate()
                 .map(vs -> Arrays.asList(vs))
                 .collect(Collectors.toList());
@@ -21,7 +21,7 @@ public class DuplicatedPermutationGeneratorTest {
 
     @Test
     public void should_gen_duplicate_success() {
-        List<List<String>> results = new DuplicatedPermutationGenerator<>(new String[]{"1", "2", "1"}, String::equals)
+        List<List<String>> results = new DuplicatedPermutationMaker<>(new String[]{"1", "2", "1"}, String::equals)
                 .generate()
                 .map(vs -> Arrays.asList(vs))
                 .collect(Collectors.toList());

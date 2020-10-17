@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @Builder
 @AllArgsConstructor
-public class CombineDetail<K, V> {
+public class DimCombineDetail<K, V> {
     /**
      * The original Key-Value result
      */
@@ -22,7 +22,7 @@ public class CombineDetail<K, V> {
     /**
      * The results which is overed by this result
      */
-    private List<CombineDetail<K, V>> overedCombines;
+    private List<DimCombineDetail<K, V>> overedCombines;
 
     /**
      * The default logic is the count of non-null dimension
@@ -34,7 +34,7 @@ public class CombineDetail<K, V> {
      */
     private int mask;
 
-    public CombineDetail(List<Pair<K, V>> normalResult) {
+    public DimCombineDetail(List<Pair<K, V>> normalResult) {
         this.normalResult = normalResult;
     }
 
@@ -53,7 +53,7 @@ public class CombineDetail<K, V> {
      * @param otherResult The other result to check with
      * @return Result
      */
-    public boolean isOver(CombineDetail<K, V> otherResult) {
+    public boolean isOver(DimCombineDetail<K, V> otherResult) {
         if (otherResult == null) {
             return true;
         }
@@ -64,7 +64,7 @@ public class CombineDetail<K, V> {
         return (mask & otherResult.mask) == otherResult.mask;
     }
 
-    public void addOveredCombine(CombineDetail<K, V> overedCombine) {
+    public void addOveredCombine(DimCombineDetail<K, V> overedCombine) {
         if (this.overedCombines == null) {
             this.overedCombines = new ArrayList<>();
         }

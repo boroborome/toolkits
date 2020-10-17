@@ -7,12 +7,12 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class PermutationGenerator<T> {
+public class SimplePermutationMaker<T> {
     private T[] baseValues;
 
     private int[] factorial;
 
-    public PermutationGenerator(T[] baseValues) {
+    public SimplePermutationMaker(T[] baseValues) {
         this.baseValues = baseValues;
     }
 

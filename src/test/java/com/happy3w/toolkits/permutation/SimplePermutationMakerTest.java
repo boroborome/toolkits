@@ -7,11 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PermutationGeneratorTest {
+public class SimplePermutationMakerTest {
 
     @Test
     public void should_gen_success() {
-        List<List<String>> results = new PermutationGenerator<>(new String[]{"1", "2", "3"})
+        List<List<String>> results = new SimplePermutationMaker<>(new String[]{"1", "2", "3"})
                 .generate()
                 .map(vs -> Arrays.asList(vs))
                 .collect(Collectors.toList());

@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class CombinationGeneratorTest {
+public class DimCombinationMakerTest {
 
     @Test
     public void should_used_in_composite_scene_success() {
-        List<CombineDetail<String, String>> details = CombinationGenerator.<String, String>builder()
+        List<DimCombineDetail<String, String>> details = DimCombinationMaker.<String, String>builder()
                 .dimension("d1", "1", "2")
                 .dimension("d2", "d2v1", "d2v2")
                 .withNullDimension(true)
@@ -41,13 +41,13 @@ public class CombinationGeneratorTest {
                 ));
     }
 
-    private MyConfig createConfig(CombineDetail<String, String> detail, Map<String, MyConfig> configMap) {
+    private MyConfig createConfig(DimCombineDetail<String, String> detail, Map<String, MyConfig> configMap) {
         String key = detail.getNormalResult().toString();
         MyConfig config = MapUtils.safeRead(configMap, key, () -> new MyConfig(detail.getNormalResult()));
         if (detail.getOveredCombines() == null) {
             return config;
         }
-        for (CombineDetail<String, String> overedDetail : detail.getOveredCombines()) {
+        for (DimCombineDetail<String, String> overedDetail : detail.getOveredCombines()) {
             String newKey = overedDetail.getNormalResult().toString();
             config.getSubConfigs().add(MapUtils.safeRead(configMap, newKey, () -> new MyConfig(overedDetail.getNormalResult())));
         }
@@ -74,7 +74,7 @@ public class CombinationGeneratorTest {
 
     @Test
     public void should_generate_permutation_with_dimension_name_success() {
-        List<List<Pair<String, String>>> results = CombinationGenerator.<String, String>builder()
+        List<List<Pair<String, String>>> results = DimCombinationMaker.<String, String>builder()
                 .dimension("d1", "1", "2")
                 .dimension("d2", "d2v1", "d2v2", null)
                 .build()
@@ -92,7 +92,7 @@ public class CombinationGeneratorTest {
 
     @Test
     public void should_generate_permutation_without_dimension_name_success() {
-        List<List<String>> results = CombinationGenerator.<String, String>builder()
+        List<List<String>> results = DimCombinationMaker.<String, String>builder()
                 .dimension("d1", "1", "2")
                 .dimension("d2","d2v1", "d2v2", null)
                 .build()
