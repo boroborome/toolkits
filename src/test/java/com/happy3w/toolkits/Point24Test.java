@@ -19,26 +19,25 @@ import java.util.stream.Stream;
 public class Point24Test {
 
     private static final boolean ACCEPT_DECIMAL = false;
-    private static final boolean FILTER_SWITCH = true;
     private static final boolean ACCEPT_NEGATIVE = false;
+    private static final boolean FILTER_SWITCH = true;
 
     @Test
     public void test24() {
-        IExpression[] valueExps = new IExpression[]{
-                new ConstExpression(6),
-                new ConstExpression(6),
-                new ConstExpression(6),
-                new ConstExpression(6),
-        };
+        int[] constValues = new int[]{1, 4, 7, 8};
 
-        AtomicInteger counter = new AtomicInteger(0);
-        TreeEnumerator.enumFullBinTree(valueExps.length * 2 - 1)
-                .flatMap(head -> enumOperator(head, valueExps.length - 1))
-                .flatMap(meta -> enumConstValue(meta, valueExps))
-                .peek(meta -> counter.incrementAndGet())
+        AtomicInteger caseCounter = new AtomicInteger(0);
+        AtomicInteger resultCounter = new AtomicInteger(0);
+        TreeEnumerator.enumFullBinTree(constValues.length * 2 - 1)
+                .flatMap(head -> enumOperator(head, constValues.length - 1))
+                .flatMap(meta -> enumConstValue(meta, constValues))
+                .peek(meta -> caseCounter.incrementAndGet())
                 .filter(meta -> checkValue(meta, 24))
+                .peek(meta -> resultCounter.incrementAndGet())
                 .forEach(meta -> System.out.println(toExpStr(meta.wrapper.exp)));
-        System.out.println(counter.get());
+
+        System.out.println(MessageFormat.format("Total case count:{0}", caseCounter.get()));
+        System.out.println(MessageFormat.format("Total result count:{0}", resultCounter.get()));
     }
 
     private String toExpStr(BinTreeNode<IExpression> expTree) {
@@ -109,10 +108,14 @@ public class Point24Test {
         }
     }
 
-    private Stream<FinalExpressionMeta> enumConstValue(FinalExpressionMeta expMeta, IExpression[] valueNodes) {
-        return new DuplicatedPermutationGenerator<>(valueNodes,
-                (a, b) ->
-                        ((ConstExpression) a).value == ((ConstExpression) b).value)
+    private Stream<FinalExpressionMeta> enumConstValue(FinalExpressionMeta expMeta, int[] constValues) {
+        IExpression[] valueNodes = new IExpression[constValues.length];
+        for (int i = 0; i < constValues.length; i++) {
+            valueNodes[i] = new ConstExpression(constValues[i]);
+        }
+
+        return new DuplicatedPermutationGenerator<>(valueNodes, (a, b) ->
+                    ((ConstExpression) a).value == ((ConstExpression) b).value)
                 .generate()
                 .map(values -> expMeta.cloneMeta().withValues(values));
     }
@@ -190,7 +193,7 @@ public class Point24Test {
 
         @Override
         public double calculate(double left, double right) {
-            if (FILTER_SWITCH && left > right) {
+            if (FILTER_SWITCH && left < right) {
                 return Double.POSITIVE_INFINITY;
             }
             return left + right;
@@ -215,7 +218,7 @@ public class Point24Test {
 
         @Override
         public double calculate(double left, double right) {
-            if (FILTER_SWITCH && left > right) {
+            if (FILTER_SWITCH && left < right) {
                 return Double.POSITIVE_INFINITY;
             }
 
