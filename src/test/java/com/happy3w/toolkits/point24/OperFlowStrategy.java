@@ -1,7 +1,8 @@
-package com.happy3w.toolkits;
+package com.happy3w.toolkits.point24;
 
 import com.happy3w.toolkits.combination.GroupCombinationMaker;
 import com.happy3w.toolkits.combination.GroupMaker;
+import com.happy3w.toolkits.utils.ArrayUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.junit.Test;
@@ -14,13 +15,28 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class Point24ImproveTest {
+public class OperFlowStrategy implements Point24Strategy {
 
     private static final boolean ACCEPT_DECIMAL = false;
     private static final boolean ACCEPT_NEGATIVE = false;
+
+    private AtomicLong caseCounter;
+
+    @Override
+    public Stream<String> judge(int[] numbers) {
+        caseCounter = new AtomicLong(0);
+        return makeExpressions(ArrayUtils.boxInt(numbers))
+                .peek(meta -> caseCounter.incrementAndGet())
+                .filter(exp -> doubleEqual(exp.getValue(), 24))
+                .map(Object::toString);
+    }
+
+    @Override
+    public long getJudgedExpCount() {
+        return caseCounter == null ? 0 : caseCounter.get();
+    }
 
     @Test
     public void should_split_two_group_success() {
@@ -28,22 +44,6 @@ public class Point24ImproveTest {
                 .map(result -> Arrays.asList(Arrays.asList(result[0]), Arrays.asList(result[1])))
                 .map(result -> result.toString())
                 .collect(Collectors.joining("\n")));
-    }
-
-    @Test
-    public void test24() {
-        Integer[] constValues = new Integer[]{1, 2, 3, 4, 5, 6};
-
-        AtomicLong caseCounter = new AtomicLong(0);
-        AtomicLong resultCounter = new AtomicLong(0);
-        makeExpressions(constValues)
-                .peek(meta -> caseCounter.incrementAndGet())
-                .filter(exp -> doubleEqual(exp.getValue(), 24))
-                .peek(meta -> resultCounter.incrementAndGet())
-                .forEach(exp -> System.out.println(exp.toString()));
-
-        System.out.println(MessageFormat.format("Total case count:{0}", caseCounter.get()));
-        System.out.println(MessageFormat.format("Total result count:{0}", resultCounter.get()));
     }
 
     public static Stream<IExpression> makeExpressions(Integer[] constValues) {

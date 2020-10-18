@@ -1,4 +1,4 @@
-package com.happy3w.toolkits;
+package com.happy3w.toolkits.point24;
 
 import com.happy3w.toolkits.combination.DimCombinationMaker;
 import com.happy3w.toolkits.permutation.DuplicatedPermutationMaker;
@@ -7,7 +7,6 @@ import com.happy3w.toolkits.tree.TreeEnumerator;
 import com.happy3w.toolkits.utils.Pair;
 import lombok.Getter;
 import lombok.Setter;
-import org.junit.Test;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -16,30 +15,29 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
-public class Point24Test {
-
+public class BinTreeStrategy implements Point24Strategy {
     private static final boolean ACCEPT_DECIMAL = false;
     private static final boolean ACCEPT_NEGATIVE = false;
     private static final boolean FILTER_SWITCH = true;
 
-    @Test
-    public void test24() {
-        int[] constValues = new int[]{1, 2, 3, 4, 5, 6};
+    private AtomicLong caseCounter;
 
-        AtomicLong caseCounter = new AtomicLong(0);
-        AtomicLong resultCounter = new AtomicLong(0);
-        TreeEnumerator.enumFullBinTree(constValues.length * 2 - 1)
-                .flatMap(head -> enumOperator(head, constValues.length - 1))
-                .flatMap(meta -> enumConstValue(meta, constValues))
+    @Override
+    public Stream<String> judge(int[] numbers) {
+        caseCounter = new AtomicLong(0);
+        return TreeEnumerator.enumFullBinTree(numbers.length * 2 - 1)
+                .flatMap(head -> enumOperator(head, numbers.length - 1))
+                .flatMap(meta -> enumConstValue(meta, numbers))
                 .peek(meta -> caseCounter.incrementAndGet())
                 .filter(meta -> checkValue(meta, 24))
-                .peek(meta -> resultCounter.incrementAndGet())
-                .forEach(meta -> System.out.println(toExpStr(meta.wrapper.exp)));
-
-        System.out.println(MessageFormat.format("Total case count:{0}", caseCounter.get()));
-        System.out.println(MessageFormat.format("Total result count:{0}", resultCounter.get()));
+                .map(meta -> toExpStr(meta.wrapper.exp));
     }
 
+    @Override
+    public long getJudgedExpCount() {
+        return caseCounter == null ? 0 : caseCounter.get();
+    }
+    
     private String toExpStr(BinTreeNode<IExpression> expTree) {
         if (expTree.isLeaf()) {
             return expTree.getData().toString();
@@ -115,7 +113,7 @@ public class Point24Test {
         }
 
         return new DuplicatedPermutationMaker<>(valueNodes, (a, b) ->
-                    ((ConstExpression) a).value == ((ConstExpression) b).value)
+                ((ConstExpression) a).value == ((ConstExpression) b).value)
                 .generate()
                 .map(values -> expMeta.cloneMeta().withValues(values));
     }
