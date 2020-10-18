@@ -12,7 +12,7 @@ public class GroupMakerTest {
 
     @Test
     public void should_make_success_when_normal() {
-        String result = GroupMaker.make(5, 3)
+        String result = GroupMaker.make(5, 3, true)
                 .map(it -> Arrays.toString(it))
                 .collect(Collectors.joining("\n"));
         Assert.assertEquals("[1, 1, 3]\n" +
@@ -25,7 +25,7 @@ public class GroupMakerTest {
 
     @Test
     public void should_make_success_when_single() {
-        String result = GroupMaker.make(5, 1)
+        String result = GroupMaker.make(5, 1, true)
                 .map(it -> Arrays.toString(it))
                 .collect(Collectors.joining("\n"));
         Assert.assertEquals("[5]", result);
@@ -33,7 +33,7 @@ public class GroupMakerTest {
 
     @Test
     public void should_make_success_when_full() {
-        String result = GroupMaker.make(5, 5)
+        String result = GroupMaker.make(5, 5, true)
                 .map(it -> Arrays.toString(it))
                 .collect(Collectors.joining("\n"));
         Assert.assertEquals("[1, 1, 1, 1, 1]", result);

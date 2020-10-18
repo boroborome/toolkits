@@ -1,6 +1,7 @@
 package com.happy3w.toolkits.permutation;
 
 import com.happy3w.toolkits.utils.IndexMapper;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.Spliterators;
@@ -9,9 +10,9 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+@Getter
 public class DuplicatedPermutationMaker<T> {
     private IndexMapper<T> mapper;
-
 
     public DuplicatedPermutationMaker(T[] baseValues, BiPredicate<T, T> equalChecker) {
         mapper = new IndexMapper<>(baseValues, equalChecker);

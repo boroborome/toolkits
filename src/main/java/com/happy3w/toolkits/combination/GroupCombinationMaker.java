@@ -24,9 +24,8 @@ public class GroupCombinationMaker<T> {
     }
 
 //    public Stream<T[][]> makeByGroupCount(int groupCount) {
-//        int[] startValues = mapper.createStartValues();
-//        return StreamSupport.stream(new GroupCombineSpliterator(startValues), false)
-//                .map(mapper::convertValues);
+//        return GroupMaker.make(mapper.getBaseValueSize(), groupCount)
+//                .flatMap(this::makeByItemCounts);
 //    }
 
     private T[][] convertValues(int[][] combineResult) {

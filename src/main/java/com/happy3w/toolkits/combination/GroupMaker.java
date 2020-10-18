@@ -7,20 +7,21 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class GroupMaker {
-    public static Stream<int[]> make(int dataSize, int groupSize) {
-        return StreamSupport.stream(new GroupSpliterator(dataSize, groupSize), false);
+    public static Stream<int[]> make(int dataSize, int groupSize, boolean ignoreOrder) {
+        return StreamSupport.stream(new GroupSpliterator(dataSize, groupSize, ignoreOrder), false);
     }
 
-
-    private static class GroupSpliterator extends Spliterators.AbstractSpliterator<int[]> {
+    public static class GroupSpliterator extends Spliterators.AbstractSpliterator<int[]> {
         private int dataSize;
         private int groupSize;
+        private boolean ignoreOrder;
         private int[] currentValue;
 
-        protected GroupSpliterator(int dataSize, int groupSize) {
+        protected GroupSpliterator(int dataSize, int groupSize, boolean ignoreOrder) {
             super(0, 0);
             this.dataSize = dataSize;
             this.groupSize = groupSize;
+            this.ignoreOrder = ignoreOrder;
         }
 
         @Override

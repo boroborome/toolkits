@@ -13,7 +13,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 public class Point24Test {
@@ -24,10 +24,10 @@ public class Point24Test {
 
     @Test
     public void test24() {
-        int[] constValues = new int[]{1, 4, 7, 8};
+        int[] constValues = new int[]{1, 2, 3, 4, 5, 6};
 
-        AtomicInteger caseCounter = new AtomicInteger(0);
-        AtomicInteger resultCounter = new AtomicInteger(0);
+        AtomicLong caseCounter = new AtomicLong(0);
+        AtomicLong resultCounter = new AtomicLong(0);
         TreeEnumerator.enumFullBinTree(constValues.length * 2 - 1)
                 .flatMap(head -> enumOperator(head, constValues.length - 1))
                 .flatMap(meta -> enumConstValue(meta, constValues))

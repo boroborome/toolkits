@@ -48,7 +48,7 @@ public class GroupCombinationMakerTest {
                 .map(it -> it.toString())
                 .collect(Collectors.joining("\n"));
         Assert.assertEquals(
-                "[[[1, 1], [1, 1], [1]]]",
+                "[[1, 1], [1, 1], [1]]",
                 finalResult);
     }
 
