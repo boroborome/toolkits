@@ -1,6 +1,7 @@
 package com.happy3w.toolkits;
 
 import com.happy3w.toolkits.combination.GroupCombinationMaker;
+import com.happy3w.toolkits.combination.GroupMaker;
 import lombok.Getter;
 import lombok.Setter;
 import org.junit.Test;
@@ -31,7 +32,7 @@ public class Point24ImproveTest {
 
     @Test
     public void test24() {
-        Integer[] constValues = new Integer[]{1, 3, 7, 4, 5, 8};
+        Integer[] constValues = new Integer[]{1, 2, 3, 4, 5, 6};
 
         AtomicLong caseCounter = new AtomicLong(0);
         AtomicLong resultCounter = new AtomicLong(0);
@@ -64,8 +65,7 @@ public class Point24ImproveTest {
         }
 
         GroupCombinationMaker<Integer> maker = new GroupCombinationMaker<>(constValues, Integer::equals);
-        return IntStream.range(1, constValues.length / 2 + 1)
-                .mapToObj(i -> new int[]{i, constValues.length - i})
+        return GroupMaker.make(constValues.length, 2)
                 .flatMap(itemCountsInGroup -> maker.makeByItemCounts(itemCountsInGroup));
     }
 

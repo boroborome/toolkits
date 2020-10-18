@@ -7,21 +7,19 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class GroupMaker {
-    public static Stream<int[]> make(int dataSize, int groupSize, boolean ignoreOrder) {
-        return StreamSupport.stream(new GroupSpliterator(dataSize, groupSize, ignoreOrder), false);
+    public static Stream<int[]> make(int dataSize, int groupSize) {
+        return StreamSupport.stream(new GroupSpliterator(dataSize, groupSize), false);
     }
 
     public static class GroupSpliterator extends Spliterators.AbstractSpliterator<int[]> {
         private int dataSize;
         private int groupSize;
-        private boolean ignoreOrder;
         private int[] currentValue;
 
-        protected GroupSpliterator(int dataSize, int groupSize, boolean ignoreOrder) {
+        protected GroupSpliterator(int dataSize, int groupSize) {
             super(0, 0);
             this.dataSize = dataSize;
             this.groupSize = groupSize;
-            this.ignoreOrder = ignoreOrder;
         }
 
         @Override
@@ -41,17 +39,32 @@ public class GroupMaker {
         }
 
         private int[] next(int[] values) {
-            for (int digIndex = values.length - 1; digIndex > 0; --digIndex) {
-                int digValue = values[digIndex];
-                if (digValue == 1) {
-                    continue;
-                }
-                values[digIndex - 1]++;
-                values[digIndex] = 1;
-                values[values.length - 1] += (digValue - 2);
-                return values;
+            int locInc = findIncreaseAbleLocation(values);
+            if (locInc < 0) {
+                return null;
             }
-            return null;
+
+            int standardValue = values[locInc] + 1;
+            int remainValue = 0;
+            for (int index = values.length - 2; index >= locInc; --index) {
+                remainValue += (values[index] - standardValue);
+                values[index] = standardValue;
+            }
+
+            values[values.length - 1] += remainValue;
+            return values;
+        }
+
+        private int findIncreaseAbleLocation(int[] values) {
+            int lastValue = values[values.length - 1];
+
+            for (int digIndex = values.length - 2; digIndex >= 0; --digIndex) {
+                int digValue = values[digIndex];
+                if (digValue + 2 <= lastValue) {
+                    return digIndex;
+                }
+            }
+            return -1;
         }
 
         private int[] initValue() {
