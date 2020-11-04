@@ -21,10 +21,78 @@ implementation 'com.happy3w:toolkits:0.0.2'
 ```
 
 ## 组件介绍
-
+- SimpleConverter 简单数据转换工具
 - combination 提供对多个维度数据进行排列组合功能
 - EasyIterator 功能类似Stream，但是增加了对排序后数据进行流式group的能力
 - utils 各种常用小工具的集合
+
+---
+### SimpleConverter
+
+这是一个负责转换常用数据类型的工具。当前支持的类型有Boolean,Date,Double,Enum,Integer,Long,String.SimpleConverter是线程安全的。
+
+#### 一般用法
+```java
+Date d1 = SimpleConverter.getInstance().convert("2019-09-01 12:00:00", Date.class);
+Date d2 = SimpleConverter.getInstance().convert(1567310400000l, Date.class);
+Assert.assertEquals(d1, d2);
+```
+上面代码得到的两个日期是一样的。
+
+#### 定制用法
+```java
+SimpleConverter.getInstance()
+    .findConverter(Date.class)              // 现在仅仅Date类型支持配置格式，Timestamp和Date使用同一个Converter，所以也会使用这个配置
+    .appendConfig("MM/dd/yyyy HH:mm:ss")    // 支持解析这种格式
+    .defaultConfig("yyyy-MM-dd HH:mm:ss");  // 支持解析这种格式，同时配置时间转换成字符串使用这个格式
+
+Date d1 = SimpleConverter.getInstance().convert("2019-09-01 12:00:00", Date.class);
+Date d2 = SimpleConverter.getInstance().convert("09/01/2019 12:00:00", Date.class);
+Assert.assertEquals(d1, d2);
+
+Assert.assertEquals("2019-09-01 12:00:00", SimpleConverter.getInstance()
+    .convert(d2, String.class));
+```
+
+
+***注意***
+类似日期格式"yyyy-MM-dd"和"MM-dd-yyyy"不能同时设置，由于SimpleDateFormat在解析的时候没有检测具体数字位数，所以可能会解析结果错误。
+
+#### 扩展方法
+1. 实现接口ISimpleConverter
+```java
+/**
+ * 实现某个数据类型和字符串之间的互相转换逻辑
+ * @param <T> converter负责处理的数据类型
+ * @param <S> 子类类型，用于返回自身的时候不用cast
+ */
+public interface ISimpleConverter<T, S extends ISimpleConverter<T, S>> {
+    /**
+     * 返回所有支持的数据类型。注册的时候会使用这个类型注册，如果类型重复后一个类型对应的Converter会被注册进去
+     * @return 所有支持的数据类型
+     */
+    Class[] dataTypes();
+
+    /**
+     * 将提供的数据转换为字符串形式。这个字符串应该包含数据的所有信息，以供解析使用
+     * @param value 需要转换的值
+     * @return 转换后的字符串
+     */
+    String convertToString(T value);
+
+    /**
+     * 从字符串解析一个数据。
+     * @param str 用于解析的字符串，应该符合固定的格式
+     * @return 转换后结果
+     */
+    T convertFromString(String str);
+}
+```
+2. 将实现的ISimpleConverter注册到Converter中。可以注册到默认的Converter中，也可以注册到自己单独的创建的实例中。
+```java
+SimpleConverter.getInstance()
+    .register(new MyConverter());
+```
 
 ### combination 组件
 

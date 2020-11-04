@@ -8,12 +8,38 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiPredicate;
 
+/**
+ * Used to convert values to index map<br>
+ *     like this:
+ *     IndexMapper mapper = IndexMapper(new String[]{"a", "b", "a", "c", "b"}, (a, b) -> a.equals(b));
+ *     then
+ *     mapper.baseValueSize == 5, it is the length of input values.
+ *     mapper.metaValues == ["a", "b", "c"], it is the different values.
+ *     mapper.metaCounts == [2, 2, 1], it is the count of each metaValue. 2a,2b and 1c
+ * @param <T>
+ */
 @Getter
 public class IndexMapper<T> {
+    /**
+     * The length of input values.
+     */
     private int baseValueSize;
+
+    /**
+     * The different values.
+     */
     private T[] metaValues;
+
+    /**
+     * The count of each metaValue
+     */
     private int[] metaCounts;
 
+    /**
+     * Constructor
+     * @param baseValues Some values, There maybe contains repeat values
+     * @param equalChecker How to check two value is equal
+     */
     public IndexMapper(T[] baseValues, BiPredicate<T, T> equalChecker) {
         int[] itemCountsTemp = new int[baseValues.length];
         Arrays.fill(itemCountsTemp, 1);
