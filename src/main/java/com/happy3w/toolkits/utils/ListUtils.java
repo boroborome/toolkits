@@ -146,11 +146,11 @@ public class ListUtils {
         return map;
     }
 
-    public static <K, T> Map<K, T> toMap(List<T> list, Function<T, K> keyGenerator) {
+    public static <K, T> Map<K, T> toMap(Collection<T> list, Function<T, K> keyGenerator) {
         return toMap(list, keyGenerator, e -> e);
     }
 
-    public static <K, V, T> Map<K, V> toMap(List<T> list, Function<T, K> keyGenerator, Function<T, V> valueGenerator) {
+    public static <K, V, T> Map<K, V> toMap(Collection<T> list, Function<T, K> keyGenerator, Function<T, V> valueGenerator) {
         Map<K, V> map = new HashMap<>();
         if (list != null) {
             for (T item : list) {
@@ -238,4 +238,6 @@ public class ListUtils {
         }
         return -1;
     }
+
+
 }
