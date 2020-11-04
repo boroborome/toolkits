@@ -1,5 +1,5 @@
 # toolkits
- 
+
 Quick Start
 -----------
 ## Maven/Gradle configuration
@@ -22,6 +22,7 @@ implementation 'com.happy3w:toolkits:0.0.2'
 
 ## 组件介绍
 - SimpleConverter 简单数据转换工具
+- MessageRecorder 负责记录各种操作过程中的错误消息
 - combination 提供对多个维度数据进行排列组合功能
 - EasyIterator 功能类似Stream，但是增加了对排序后数据进行流式group的能力
 - utils 各种常用小工具的集合
@@ -93,6 +94,61 @@ public interface ISimpleConverter<T, S extends ISimpleConverter<T, S>> {
 SimpleConverter.getInstance()
     .register(new MyConverter());
 ```
+
+### MessageRecorder 组件
+这个组件负责在处理一个逻辑的过程中收集各种信息，最终可以将收集内容以Map的形式当做Response返回到client。一般的使用流程如下：
+
+```java
+/**
+ * 1、Controller中接收到请求，调用Service功能后返回结果
+ * 这是一个上传学生信息的样例
+ */
+public class StudentController {
+    @ResponseBody
+    @RequestMapping(value = "/_cmd/upload", method = RequestMethod.POST)
+    public Map<String, List<String>> uploadData(
+        @RequestParam(value = "file") MultipartFile file) {
+        MessageRecorder messageRecorder = studentService.upload(file.getInputStream(), ignoreWarning);
+        return messageRecorder.toResponse();     // 将返回的消息信息转换为Response。出错时的状态码为200，Http的状态码仅用于表示链路状态，不要用于表示业务信息。
+    }
+}
+
+/**
+ * 2、Service将接收到的文件解析，遇到的问题记录在MessageRecoder中，
+ * 最后根据messageRecorder.isSuccess()决定是否入库。
+ */
+public class StudentService {
+    public MessageRecorder upload(InputStream inputStream) {
+         MessageRecorder messageRecorder = new MessageRecorder();
+         
+         // 解析文件
+         ...
+         // 过程中遇到问题，可以使用下面代码记录下来，可以记录Error，也可以记录Warning，还可以仅仅是一个提示信息info
+         if (student.getAge() < 10) {
+             messageRecorder.appendError("Age is too small. current age is:{0}", student.getAge());             
+         }
+         
+         // 最后根据解析结果决定是否要继续处理
+         if (messageRecorder.isSuccess()) {
+             saveAllData(allStudents);
+         }
+         return messageRecorder;
+    }
+}
+```
+
+对于某些出错就想抛出异常，但是接口是MessageRecorder的场景，可以使用MessageRecorder.errorExceptionRecorder()作为参数。
+对于想要收集某一段操作都有哪些问题的场景，可以使用下面代码
+
+```java
+MessageRecorder messageRecorder = new MessageRecorder(ignoreWarning);
+
+...
+MessageFilter filter =  messageRecorder.startErrorFilter();
+... // 一段业务逻辑
+String errors = filter.getMessage();    // 得到过程中所有error消息
+```
+
 
 ### combination 组件
 

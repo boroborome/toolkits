@@ -132,7 +132,7 @@ public class MessageRecorder {
         levelInfos.clear();
     }
 
-    public Map<String, List<String>> toMessageResponse() {
+    public Map<String, List<String>> toResponse() {
         return ListUtils.toMap(levelInfos.values(), LevelInfo::getMessageType, LevelInfo::getMessages);
     }
 
