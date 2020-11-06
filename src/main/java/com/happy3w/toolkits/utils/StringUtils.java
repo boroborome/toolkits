@@ -18,4 +18,8 @@ public class StringUtils {
         }
         return false;
     }
+
+    public static String emptyToNull(String str) {
+        return isEmpty(str) ? null : str;
+    }
 }

@@ -18,6 +18,7 @@ public class MapUtils {
         return resultMap;
     }
 
+    @Deprecated // Please use Map.computeIfAbsent
     public static <K, V> V safeRead(Map<K, V> map, K key, Supplier<V> supplier) {
         V value = map.get(key);
         if (value == null) {

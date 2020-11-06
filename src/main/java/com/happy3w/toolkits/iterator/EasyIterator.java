@@ -24,7 +24,7 @@ public abstract class EasyIterator<T> implements Iterator<T> {
         return new IteratorExtIterator<>(iterator);
     }
 
-    public static <T> EasyIterator<T> from(T... values) {
+    public static <T> EasyIterator<T> of(T... values) {
         return new IteratorExtIterator<>(Arrays.asList(values).iterator());
     }
 

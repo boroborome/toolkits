@@ -3,10 +3,14 @@ group = 'com.happy3w'
 version = '0.0.3'
 ext {
 	artifactId = "toolkits"
+
+	upload = 'enable'
+	description = "Some kits for common use"
+	url = 'https://github.com/boroborome/toolkits'
+	developerConnection = 'scm:git@github.com:boroborome/toolkits.git'
 }
 
 apply plugin: 'java-library'
-//apply from: 'maven-publish.gradle'
 
 sourceCompatibility = '1.8'
 
@@ -24,6 +28,5 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.2'
 }
 
-tasks.withType(JavaCompile) {
-	options.encoding = "UTF-8"
-}
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+

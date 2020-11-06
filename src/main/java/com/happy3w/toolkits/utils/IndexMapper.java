@@ -11,12 +11,12 @@ import java.util.function.BiPredicate;
 /**
  * Used to convert values to index map<br>
  *     like this:
- *     IndexMapper mapper = IndexMapper(new String[]{"a", "b", "a", "c", "b"}, (a, b) -> a.equals(b));
+ *     IndexMapper mapper = IndexMapper(new String[]{"a", "b", "a", "c", "b"}, (a, b) -&gt; a.equals(b));
  *     then
  *     mapper.baseValueSize == 5, it is the length of input values.
  *     mapper.metaValues == ["a", "b", "c"], it is the different values.
  *     mapper.metaCounts == [2, 2, 1], it is the count of each metaValue. 2a,2b and 1c
- * @param <T>
+ * @param <T> The value type
  */
 @Getter
 public class IndexMapper<T> {
