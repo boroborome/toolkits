@@ -1,6 +1,6 @@
 
 group = 'com.happy3w'
-version = '0.0.3'
+version = '0.0.4'
 ext {
 	artifactId = "toolkits"
 
