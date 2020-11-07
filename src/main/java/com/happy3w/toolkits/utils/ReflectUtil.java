@@ -1,6 +1,8 @@
 package com.happy3w.toolkits.utils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.MessageFormat;
 import java.util.Objects;
 
 public class ReflectUtil {
@@ -19,5 +21,14 @@ public class ReflectUtil {
             }
         }
         throw new IllegalArgumentException("Can't find method:" + methodName);
+    }
+
+    public static Object invoke(Method method, Object owner, Object...params) {
+        try {
+            return method.invoke(owner, params);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(MessageFormat.format("Failed to run method {0} for object {1}, Error is :{2}",
+                    method, owner, e.getMessage(), e));
+        }
     }
 }
