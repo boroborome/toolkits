@@ -189,6 +189,14 @@ public class ListUtils {
         return data.subList(startIndex, toIndex);
     }
 
+    public static <T> List<T> newList(int size, T defaultValue) {
+        List<T> list = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            list.add(defaultValue);
+        }
+        return list;
+    }
+
     public static <T> List<T> newList(Collection<T> initData, T... newDatas) {
         List<T> list = new ArrayList<>(initData);
         for (T t : newDatas) {

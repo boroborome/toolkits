@@ -13,6 +13,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public abstract class EasyIterator<T> implements Iterator<T> {
 
@@ -116,5 +117,10 @@ public <K> EasyIterator<Map.Entry<K, List<T>>> groupBy(Function<T, K> keyGenerat
             values.add(next());
         }
         return values;
+    }
+
+    public Stream<T> stream() {
+        Iterable<T> iterable = () -> this;
+        return StreamSupport.stream(iterable.spliterator(), false);
     }
 }
