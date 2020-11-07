@@ -19,6 +19,9 @@ public class DateConverter implements ISimpleConverter<Date, DateConverter> {
 
     public DateConverter() {
         defaultConfig("yyyy-MM-dd HH:mm:ss");
+        appendConfig("yyyy-MM-dd");
+        appendConfig("yyyy/MM/dd HH:mm:ss");
+        appendConfig("yyyy/MM/dd");
     }
 
     @Override
@@ -69,7 +72,7 @@ public class DateConverter implements ISimpleConverter<Date, DateConverter> {
 
         date = parseDate(str);
         if (date == null) {
-            throw new IllegalArgumentException("Can''t parse date value from text:" + str);
+            throw new IllegalArgumentException("Can't parse date value from text:" + str);
         }
         return date;
     }

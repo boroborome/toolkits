@@ -12,7 +12,12 @@ public class SimpleConverterTest {
     public void should_convert_string_and_number_to_date_success() {
         Date d1 = SimpleConverter.getInstance().convert("2019-09-01 12:00:00", Date.class);
         Date d2 = SimpleConverter.getInstance().convert(1567310400000l, Date.class);
+
         Assert.assertEquals(d1, d2);
+
+        Date d3 = SimpleConverter.getInstance().convert("2019-09-01", Date.class);
+        Date d4 = SimpleConverter.getInstance().convert("2019/09/01", Date.class);
+        Assert.assertEquals(d3, d4);
     }
 
     @Test
