@@ -13,6 +13,7 @@ import java.util.Set;
 public class TypeConverter {
     public static final TypeConverter INSTANCE = new TypeConverter();
     static {
+        INSTANCE.regist(new DateLongBiTci());
         INSTANCE.regist(new NumStrTci());
         INSTANCE.regist(new NullStrTci());
         INSTANCE.regist(new DateStrTci());
