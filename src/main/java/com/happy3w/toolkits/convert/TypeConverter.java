@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 public class TypeConverter {
     public static final TypeConverter INSTANCE = new TypeConverter();
@@ -58,7 +59,7 @@ public class TypeConverter {
     }
 
     private <S, T> ITypeConvertItem<S, T> findConvertPath(TciKey<S, T> tciKey) {
-        List<ITypeConvertItem<?, ?>> items = sourceTciMap.get(tciKey.getSourceType());
+        List<ITypeConvertItem<?, ?>> items = findAllSourceTci(tciKey.getSourceType());
         if (items == null || items.isEmpty()) {
             return null;
         }
@@ -82,8 +83,34 @@ public class TypeConverter {
         return null;
     }
 
+    private <S> List<ITypeConvertItem<?, ?>> findAllSourceTci(Class<S> sourceType) {
+        Stack<Class> typeStack = new Stack<>();
+        typeStack.push(sourceType);
+        List<ITypeConvertItem<?, ?>> tcis = new ArrayList<>();
+        Set<Class> typeProcessed = new HashSet<>();
+        while (!typeStack.isEmpty()) {
+            Class curType = typeStack.pop();
+            if (typeProcessed.contains(curType)) {
+                continue;
+            }
+            List<ITypeConvertItem<?, ?>> curTypeTcis = sourceTciMap.get(curType);
+            if (curTypeTcis != null && !curTypeTcis.isEmpty()) {
+                tcis.addAll(curTypeTcis);
+            }
+
+            Class superClass = curType.getSuperclass();
+            if (superClass != null && superClass != Object.class) {
+                typeStack.push(superClass);
+            }
+            for (Class ifType : curType.getInterfaces()) {
+                typeStack.push(ifType);
+            }
+        }
+        return tcis;
+    }
+
     private <S, T> void findMorePathInfo(PathInfo pathInfo, List<PathInfo> newPathInfos) {
-        List<ITypeConvertItem<?, ?>> tciList = sourceTciMap.get(pathInfo.getLastType());
+        List<ITypeConvertItem<?, ?>> tciList = findAllSourceTci(pathInfo.getLastType());
         if (tciList == null || tciList.isEmpty()) {
             return;
         }
