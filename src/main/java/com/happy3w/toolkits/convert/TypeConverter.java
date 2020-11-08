@@ -24,6 +24,11 @@ public class TypeConverter {
 
     public void regist(ITypeConvertItem<?, ?> convertItem) {
         regist(convertItem, convertItem);
+        if (convertItem instanceof IBiTypeConvertItem) {
+            IBiTypeConvertItem<?, ?> biTci = (IBiTypeConvertItem) convertItem;
+            ITypeConvertItem<?, ?> reversedTci = biTci.reverse();
+            regist(reversedTci, reversedTci);
+        }
     }
 
     private void regist(ITypeConvertItemKey<?, ?> key, ITypeConvertItem<?, ?> item) {
