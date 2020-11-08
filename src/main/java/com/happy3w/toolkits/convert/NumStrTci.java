@@ -6,7 +6,7 @@ public class NumStrTci extends AbstractTci<Number, String> {
     }
 
     @Override
-    public String convert(Number source) {
+    public String toTarget(Number source) {
         return source.toString();
     }
 }

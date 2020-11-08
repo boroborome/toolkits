@@ -6,7 +6,7 @@ public class NullStrTci extends AbstractTci<Void, String> {
     }
 
     @Override
-    public String convert(Void source) {
+    public String toTarget(Void source) {
         return "";
     }
 }

@@ -44,11 +44,11 @@ public class TypeConverter {
             convertItem = (ITypeConvertItem<S, T>) findConvertPath(tciKey);
             if (convertItem == null) {
                 throw new UnsupportedOperationException(
-                        MessageFormat.format("Failed to convert {0} to {1}. No direct path and indirect path.", source, targetType));
+                        MessageFormat.format("Failed to toTarget {0} to {1}. No direct path and indirect path.", source, targetType));
             }
             convertItemMap.put(tciKey, convertItem);
         }
-        return convertItem.convert(source);
+        return convertItem.toTarget(source);
     }
 
     private <S, T> ITypeConvertItem<S, T> findConvertPath(TciKey<S, T> tciKey) {

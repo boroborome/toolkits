@@ -8,7 +8,7 @@ public class DateStrTci extends AbstractTci<Date, String> {
     }
 
     @Override
-    public String convert(Date source) {
+    public String toTarget(Date source) {
         return String.valueOf(source.getTime());
     }
 }

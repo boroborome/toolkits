@@ -13,10 +13,10 @@ public class IndirectTci<S, T> extends AbstractTci<S, T> {
     }
 
     @Override
-    public T convert(S source) {
+    public T toTarget(S source) {
         Object curValue = source;
         for (ITypeConvertItem tci : convertItems) {
-            curValue = tci.convert(curValue);
+            curValue = tci.toTarget(curValue);
         }
         return (T) curValue;
     }

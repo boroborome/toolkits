@@ -6,7 +6,7 @@ public class StrLongTci extends AbstractTci<String, Long> {
     }
 
     @Override
-    public Long convert(String source) {
+    public Long toTarget(String source) {
         return Long.parseLong(source);
     }
 }
