@@ -16,7 +16,7 @@ public class TypeConverter {
         INSTANCE.regist(new DateLongBiTci());
         INSTANCE.regist(new NumStrTci());
         INSTANCE.regist(new NullStrTci());
-        INSTANCE.regist(new DateStrTci());
+        INSTANCE.regist(new DateStrBiTci());
         INSTANCE.regist(new StrLongTci());
     }
 
