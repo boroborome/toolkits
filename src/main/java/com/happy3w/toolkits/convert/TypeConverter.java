@@ -19,10 +19,22 @@ public class TypeConverter {
         INSTANCE.regist(new NullStrTci());
         INSTANCE.regist(new DateStrBiTci());
         INSTANCE.regist(new StrLongTci());
+        INSTANCE.regist(new StrIntegerTci());
+        INSTANCE.regist(new StrBigDecimalTci());
+        INSTANCE.regist(new StrDoubleTci());
+        INSTANCE.regist(new StrFloatTci());
+        INSTANCE.regist(new BoolStrBiTci());
     }
 
     private Map<ITypeConvertItemKey<?, ?>, ITypeConvertItem<?, ?>> convertItemMap = new HashMap<>();
     private Map<Class<?>, List<ITypeConvertItem<?, ?>>> sourceTciMap = new HashMap<>();
+
+    public TypeConverter newCopy() {
+        TypeConverter newConverter = new TypeConverter();
+        newConverter.convertItemMap.putAll(convertItemMap);
+        newConverter.sourceTciMap.putAll(sourceTciMap);
+        return newConverter;
+    }
 
     public void regist(ITypeConvertItem<?, ?> convertItem) {
         regist(convertItem, convertItem);
@@ -51,7 +63,7 @@ public class TypeConverter {
             convertItem = (ITypeConvertItem<S, T>) findConvertPath(tciKey);
             if (convertItem == null) {
                 throw new UnsupportedOperationException(
-                        MessageFormat.format("Failed to toTarget {0} to {1}. No direct path and indirect path.", source, targetType));
+                        MessageFormat.format("Failed to convert {0} to {1}. No direct path and indirect path.", source, targetType));
             }
             convertItemMap.put(tciKey, convertItem);
         }
