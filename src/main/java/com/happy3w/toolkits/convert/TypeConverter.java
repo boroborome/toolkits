@@ -28,15 +28,18 @@ public class TypeConverter {
 
     private Map<ITypeConvertItemKey<?, ?>, ITypeConvertItem<?, ?>> convertItemMap = new HashMap<>();
     private Map<Class<?>, List<ITypeConvertItem<?, ?>>> sourceTciMap = new HashMap<>();
+    private Map<Class<?>, ITypeConvertItem<?, ?>> tciMap = new HashMap<>();
 
     public TypeConverter newCopy() {
         TypeConverter newConverter = new TypeConverter();
         newConverter.convertItemMap.putAll(convertItemMap);
         newConverter.sourceTciMap.putAll(sourceTciMap);
+        newConverter.tciMap.putAll(tciMap);
         return newConverter;
     }
 
     public void regist(ITypeConvertItem<?, ?> convertItem) {
+        tciMap.put(convertItem.getClass(), convertItem);
         regist(convertItem, convertItem);
         if (convertItem instanceof IBiTypeConvertItem) {
             IBiTypeConvertItem<?, ?> biTci = (IBiTypeConvertItem) convertItem;
@@ -60,7 +63,7 @@ public class TypeConverter {
 
         ITypeConvertItem<S, T> convertItem = (ITypeConvertItem<S, T>) convertItemMap.get(tciKey);
         if (convertItem == null) {
-            convertItem = (ITypeConvertItem<S, T>) findConvertPath(tciKey);
+            convertItem = (ITypeConvertItem<S, T>) findTci(tciKey);
             if (convertItem == null) {
                 throw new UnsupportedOperationException(
                         MessageFormat.format("Failed to convert {0} to {1}. No direct path and indirect path.", source, targetType));
@@ -70,7 +73,15 @@ public class TypeConverter {
         return convertItem.toTarget(source);
     }
 
-    private <S, T> ITypeConvertItem<S, T> findConvertPath(TciKey<S, T> tciKey) {
+    public <T extends ITypeConvertItem<?, ?>> T findTci(Class<T> tciType) {
+        return (T) tciMap.get(tciType);
+    }
+
+    public <S, T> ITypeConvertItem<S, T> findTci(Class<S> sourceType, Class<T> targetType) {
+        return findTci(new TciKey<>(sourceType, targetType));
+    }
+
+    public <S, T> ITypeConvertItem<S, T> findTci(TciKey<S, T> tciKey) {
         List<ITypeConvertItem<?, ?>> items = findAllSourceTci(tciKey.getSourceType());
         if (items == null || items.isEmpty()) {
             return null;
