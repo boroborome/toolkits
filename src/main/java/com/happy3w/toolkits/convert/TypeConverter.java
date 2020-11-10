@@ -54,6 +54,8 @@ public class TypeConverter {
         }
         convertItemMap.put(key, item);
         List<ITypeConvertItem<?, ?>> items = sourceTciMap.computeIfAbsent(key.getSourceType(), k -> new ArrayList<>());
+        final Class<?> targetType = key.getTargetType();
+        items.removeIf(it -> it.getTargetType() == targetType);
         items.add(item);
     }
 
