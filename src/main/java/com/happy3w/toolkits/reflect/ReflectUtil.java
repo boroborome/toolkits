@@ -1,5 +1,8 @@
 package com.happy3w.toolkits.reflect;
 
+import com.happy3w.toolkits.utils.StringUtils;
+
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
@@ -21,6 +24,23 @@ public class ReflectUtil {
             }
         }
         throw new IllegalArgumentException("Can't find method:" + methodName);
+    }
+
+    public static Method findGetter(Field field) {
+        String capitalizeName = StringUtils.capitalize(field.getName());
+        String getterName = "get" + capitalizeName;
+        Method[] methods = field.getDeclaringClass().getMethods();
+        Method getter = findMethod(getterName, methods);
+        if (getter != null) {
+            return getter;
+        }
+
+        return findMethod("is" + capitalizeName, methods);
+    }
+
+    public static Method findSetter(Field field) {
+        String capitalizeName = StringUtils.capitalize(field.getName());
+        return findMethod("set" + capitalizeName, field.getDeclaringClass().getMethods());
     }
 
     public static Object invoke(Method method, Object owner, Object...params) {
