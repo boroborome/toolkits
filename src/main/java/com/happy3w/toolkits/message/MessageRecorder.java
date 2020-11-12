@@ -132,8 +132,9 @@ public class MessageRecorder {
         levelInfos.clear();
     }
 
-    public Map<String, List<String>> toResponse() {
-        return ListUtils.toMap(levelInfos.values(), LevelInfo::getMessageType, LevelInfo::getMessages);
+    public MessageResponse<?> toResponse() {
+        Map<String, List<String>> msgs = ListUtils.toMap(levelInfos.values(), LevelInfo::getMessageType, LevelInfo::getMessages);
+        return MessageResponse.fromMsg(msgs);
     }
 
     public void appendMessages(Map<String, List<String>> messageResponse) {
