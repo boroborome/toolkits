@@ -1,6 +1,6 @@
 package com.happy3w.toolkits.manager;
 
-import com.happy3w.toolkits.utils.ReflectUtil;
+import com.happy3w.toolkits.reflect.ReflectUtil;
 
 import java.util.HashMap;
 import java.util.Map;
