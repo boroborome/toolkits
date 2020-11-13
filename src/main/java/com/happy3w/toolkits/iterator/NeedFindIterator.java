@@ -1,9 +1,11 @@
 package com.happy3w.toolkits.iterator;
 
+import java.util.Optional;
+
 public abstract class NeedFindIterator<T> extends EasyIterator<T> {
 
-    protected IteratorStatus status = IteratorStatus.needFind;
-    protected T nextItem;
+    private IteratorStatus status = IteratorStatus.needFind;
+    private T nextItem;
 
     @Override
     public boolean hasNext() {
@@ -24,7 +26,12 @@ public abstract class NeedFindIterator<T> extends EasyIterator<T> {
             return null;
         }
         if (status == IteratorStatus.needFind) {
-            findNext();
+            Optional<T> optNext = findNext();
+            if (optNext.isPresent()) {
+                nextItem = optNext.get();
+            } else {
+                status = IteratorStatus.end;
+            }
         }
 
         if (status == IteratorStatus.found) {
@@ -34,9 +41,9 @@ public abstract class NeedFindIterator<T> extends EasyIterator<T> {
         return null;
     }
 
-    protected abstract void findNext();
+    protected abstract Optional<T> findNext();
 
-    protected enum IteratorStatus {
+    public enum IteratorStatus {
         needFind,
         found,
         end

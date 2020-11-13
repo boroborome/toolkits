@@ -1,6 +1,7 @@
 package com.happy3w.toolkits.iterator;
 
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class FilterIterator<T> extends NeedFindIterator<T> {
@@ -14,15 +15,13 @@ public class FilterIterator<T> extends NeedFindIterator<T> {
     }
 
     @Override
-    protected void findNext() {
-        status = IteratorStatus.end;
+    protected Optional<T> findNext() {
         while (innerIterator.hasNext()) {
             T value = innerIterator.next();
             if (predicate.test(value)) {
-                nextItem = value;
-                status = IteratorStatus.found;
-                break;
+                return Optional.ofNullable(value);
             }
         }
+        return Optional.empty();
     }
 }

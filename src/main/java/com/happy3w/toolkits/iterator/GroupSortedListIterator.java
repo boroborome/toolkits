@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class GroupSortedListIterator<T, K, V> extends NeedFindIterator<Map.Entry<K, List<V>>> {
@@ -28,15 +29,13 @@ public class GroupSortedListIterator<T, K, V> extends NeedFindIterator<Map.Entry
     }
 
     @Override
-    protected void findNext() {
-        status = IteratorStatus.end;
-
+    protected Optional<Map.Entry<K, List<V>>> findNext() {
         MapEntry<K, List<V>> entry = startToCollect();
         if (entry != null) {
             collectAllSameKey(entry);
-            this.nextItem = entry;
-            status = IteratorStatus.found;
+            return Optional.ofNullable(entry);
         }
+        return Optional.empty();
     }
 
     private void collectAllSameKey(MapEntry<K, List<V>> entry) {
