@@ -14,7 +14,13 @@ public abstract class NeedFindIterator<T> extends EasyIterator<T> {
         }
 
         if (status == IteratorStatus.needFind) {
-            findNext();
+            Optional<T> optNext = findNext();
+            if (optNext.isPresent()) {
+                nextItem = optNext.get();
+                status = IteratorStatus.found;
+            } else {
+                status = IteratorStatus.end;
+            }
         }
         return status == IteratorStatus.found;
     }
