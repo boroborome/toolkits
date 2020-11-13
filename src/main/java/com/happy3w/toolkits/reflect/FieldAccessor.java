@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 @Getter
@@ -16,17 +15,24 @@ public class FieldAccessor {
     private Method getMethod;
     private Method setMethod;
 
+    public static FieldAccessor from(String fieldName, Class owner) {
+        return from(fieldName, owner.getDeclaredMethods());
+    }
+
     public static FieldAccessor from(Field field) {
-        String capitalizeName = StringUtils.capitalize(field.getName());
-        Method[] methods = field.getDeclaringClass().getMethods();
+        return from(field.getName(), field.getDeclaringClass().getMethods());
+    }
+
+    public static FieldAccessor from(String fieldName, Method[] methods) {
+        String capitalizeName = StringUtils.capitalize(fieldName);
         Method getter = findGetter(capitalizeName, methods);
         Method setter = findSetter(capitalizeName, methods);
         if (getter == null) {
-            throw new RuntimeException("No Property define for field:" + field.toString());
+            throw new RuntimeException("No Property define for field:" + fieldName);
         }
 
-        return new FieldAccessor(field.getName(),
-                field.getType(),
+        return new FieldAccessor(fieldName,
+                getter.getReturnType(),
                 getter,
                 setter);
     }
@@ -44,14 +50,14 @@ public class FieldAccessor {
         return ReflectUtil.findMethod("is" + capitalizeName, methods);
     }
 
-    public Object getValue(Object data) {
-        if (data == null) {
+    public Object getValue(Object owner) {
+        if (owner == null) {
             return null;
         }
-        try {
-            return getMethod.invoke(data);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException("Failed to read field:" + fieldName + " from:" + data, e);
-        }
+        return ReflectUtil.invoke(getMethod, owner);
+    }
+
+    public void setValue(Object owner, Object data) {
+        ReflectUtil.invoke(setMethod, owner, data);
     }
 }
