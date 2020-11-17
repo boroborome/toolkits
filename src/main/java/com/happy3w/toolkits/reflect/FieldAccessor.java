@@ -6,12 +6,15 @@ import lombok.Getter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
 public class FieldAccessor {
     private String fieldName;
-    private Class dataType;
+    private Field field;
+    private Class propertyType;
     private Method getMethod;
     private Method setMethod;
 
@@ -28,10 +31,18 @@ public class FieldAccessor {
         Method getter = findGetter(capitalizeName, methods);
         Method setter = findSetter(capitalizeName, methods);
         if (getter == null) {
-            throw new RuntimeException("No Property define for field:" + fieldName);
+            return null;
+        }
+
+        Field field;
+        try {
+            field = getter.getDeclaringClass().getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            field = null;
         }
 
         return new FieldAccessor(fieldName,
+                field,
                 getter.getReturnType(),
                 getter,
                 setter);
@@ -59,5 +70,17 @@ public class FieldAccessor {
 
     public void setValue(Object owner, Object data) {
         ReflectUtil.invoke(setMethod, owner, data);
+    }
+
+
+    public static List<FieldAccessor> allFieldAccessors(Class dataType) {
+        List<FieldAccessor> accessors = new ArrayList<>();
+        for (Field field : dataType.getDeclaredFields()) {
+            FieldAccessor accessor = FieldAccessor.from(field);
+            if (accessor != null) {
+                accessors.add(accessor);
+            }
+        }
+        return accessors;
     }
 }
