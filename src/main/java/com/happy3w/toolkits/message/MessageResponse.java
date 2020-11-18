@@ -3,6 +3,8 @@ package com.happy3w.toolkits.message;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +23,13 @@ public class MessageResponse<T> {
         return new MessageResponse<>(data, null);
     }
 
-    public static <T> MessageResponse<T> fromMsg(Map<String, List<String>> msgs) {
+    public static <T> MessageResponse<T> fromMsgs(Map<String, List<String>> msgs) {
+        return new MessageResponse<>(null, msgs);
+    }
+
+    public static <T> MessageResponse<T> fromError(String error) {
+        Map<String, List<String>> msgs = new HashMap<>();
+        msgs.put(MessageType.ERROR, Arrays.asList(error));
         return new MessageResponse<>(null, msgs);
     }
 }
