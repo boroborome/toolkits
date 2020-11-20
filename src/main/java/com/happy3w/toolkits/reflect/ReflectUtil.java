@@ -23,7 +23,7 @@ public class ReflectUtil {
                 return method;
             }
         }
-        throw new IllegalArgumentException("Can't find method:" + methodName);
+        return null;
     }
 
     public static Method findGetter(Field field) {
