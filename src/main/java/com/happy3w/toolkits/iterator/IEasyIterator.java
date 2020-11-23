@@ -70,6 +70,17 @@ public interface IEasyIterator<T> extends Iterator<T> {
                 .flatMap(it -> it);
     }
 
+    default IEasyIterator<T> limited(long maxSize) {
+        if (maxSize <= 0) {
+            return this;
+        }
+        return new LimitedIterator<>(this, maxSize);
+    }
+
+    default IEasyIterator<IndexedItem<T>> indexed() {
+        return new IndexedIterator<>(this);
+    }
+
     default <K> Map<K, T> toMap(Function<T, K> keyGenerator) {
         return toMap(keyGenerator, v -> v);
     }
