@@ -11,6 +11,7 @@ public class PrimitiveTypeUtil {
         regist(new TypePair(long.class, Long.class));
         regist(new TypePair(boolean.class, Boolean.class));
         regist(new TypePair(float.class, Float.class));
+        regist(new TypePair(double.class, Double.class));
         regist(new TypePair(char.class, Character.class));
         regist(new TypePair(short.class, Short.class));
         regist(new TypePair(byte.class, Byte.class));

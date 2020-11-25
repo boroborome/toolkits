@@ -37,6 +37,12 @@ public class TypeConverterTest {
     }
 
     @Test
+    public void should_convert_str_to_double_success() {
+        String str = "2.3450";
+        Assert.assertEquals(2.345d, TypeConverter.INSTANCE.convert(str, double.class).doubleValue(), 0.01);
+    }
+
+    @Test
     public void should_convert_string_and_number_to_date_success() {
         Date d1 = TypeConverter.INSTANCE.convert("2019-09-01 12:00:00", Date.class);
         Date d2 = TypeConverter.INSTANCE.convert(1567310400000l, Date.class);
