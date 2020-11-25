@@ -1,6 +1,7 @@
 package com.happy3w.toolkits.convert;
 
 import com.happy3w.toolkits.utils.ListUtils;
+import com.happy3w.toolkits.utils.PrimitiveTypeUtil;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ public class TypeConverter {
 
     public <S, T> T convert(S source, Class<T> targetType) {
         Class<?> sourceType = source == null ? Void.class : source.getClass();
+        targetType = PrimitiveTypeUtil.toObjType(targetType);
         if (targetType.isAssignableFrom(sourceType)) {
             return (T) source;
         }
