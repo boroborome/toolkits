@@ -61,6 +61,9 @@ public class TypeConverter {
 
     public <S, T> T convert(S source, Class<T> targetType) {
         Class<?> sourceType = source == null ? Void.class : source.getClass();
+        if (targetType.isAssignableFrom(sourceType)) {
+            return (T) source;
+        }
         TciKey<?, ?> tciKey = new TciKey<>(sourceType , targetType);
 
         ITypeConvertItem<S, T> convertItem = (ITypeConvertItem<S, T>) convertItemMap.get(tciKey);
