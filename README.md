@@ -187,8 +187,10 @@ EasyIterator.from(studentStream)                                                
         ...
     })
     .filter(...)
+    .limit(5000)                                                                    // 限制最多输出5000条记录
     .split(1000)                                                                    // 在Stream的基础上增加了split方法，通过这个方法将数据分组处理
     .flatMap(...)
+    .indexed()                                                                      // 将数据包装成带有索引的数据
     .toList();                                                                      // 直接转换为List
 //  .toMap(v -> createKey(v));                                                      // 生成一个key,value的map，这里没有检测重复key，如果key重复最后一个出现的生效
 //  .toMapList(v -> createKey(v));                                                  // 生成一个key,List<value>的map，key相同的value分组到一个列表中了
