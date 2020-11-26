@@ -84,12 +84,14 @@ public class TypeConverter {
         return (T) tciMap.get(tciType);
     }
 
-    public <S, T> ITypeConvertItem<S, T> findTci(Class<S> sourceType, Class<T> targetType) {
-        return findTci(new TciKey<>(sourceType, targetType));
-    }
-
     public <S, T> ITypeConvertItem<S, T> findTci(TciKey<S, T> tciKey) {
-        List<ITypeConvertItem<?, ?>> items = findAllSourceTci(tciKey.getSourceType());
+        return findTci(tciKey.getSourceType(), tciKey.getTargetType());
+    }
+    public <S, T> ITypeConvertItem<S, T> findTci(Class<S> sourceTypeIn, Class<T> targetTypeIn) {
+        Class<S> sourceType = PrimitiveTypeUtil.toObjType(sourceTypeIn);
+        Class<T> targetType = PrimitiveTypeUtil.toObjType(targetTypeIn);
+
+        List<ITypeConvertItem<?, ?>> items = findAllSourceTci(sourceType);
         if (items == null || items.isEmpty()) {
             return null;
         }
@@ -99,8 +101,8 @@ public class TypeConverter {
             for (PathInfo pathInfo : pathInfos) {
                 int pathInfoLength = pathInfo.path.size();
                 if (pathInfoLength == level) {
-                    if (pathInfo.getLastType() == tciKey.targetType) {
-                        return pathInfo.createTci(tciKey);
+                    if (pathInfo.getLastType() == targetType) {
+                        return pathInfo.createTci(sourceType, targetType);
                     }
                     findMorePathInfo(pathInfo, newPathInfos);
                 } else if (pathInfoLength > level) {
@@ -198,8 +200,8 @@ public class TypeConverter {
             return path.get(path.size() - 1).getTargetType();
         }
 
-        public <S, T> ITypeConvertItem<S, T> createTci(TciKey<S, T> tciKey) {
-            return new IndirectTci<S, T>(tciKey.getSourceType(), tciKey.getTargetType(), path);
+        public <S, T> ITypeConvertItem<S, T> createTci(Class<S> sourceType, Class<T> targetType) {
+            return new IndirectTci<S, T>(sourceType, targetType, path);
         }
     }
 }
