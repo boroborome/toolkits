@@ -3,6 +3,7 @@ package com.happy3w.toolkits.convert;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -34,6 +35,12 @@ public class TypeConverterTest {
         long value = 1604850105517l;
         String str = String.valueOf(value);
         Assert.assertEquals(value, TypeConverter.INSTANCE.convert(str, Long.class).longValue());
+    }
+
+    @Test
+    public void should_convert_double_to_decimal_success() {
+        ITypeConvertItem<Double, BigDecimal> tci = TypeConverter.INSTANCE.findTci(double.class, BigDecimal.class);
+        Assert.assertEquals("java.lang.Number -> java.math.BigDecimal", tci.toString());
     }
 
     @Test
