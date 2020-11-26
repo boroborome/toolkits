@@ -20,4 +20,16 @@ public class IndirectTci<S, T> extends AbstractTci<S, T> {
         }
         return (T) curValue;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        for (ITypeConvertItem<?, ?> tci : convertItems) {
+            Class<?> st = tci.getSourceType();
+            buf.append(st == null ? "null" : st.getName())
+                    .append(" -> ");
+        }
+        buf.append(targetType == null ? "null" : targetType.getName());
+        return buf.toString();
+    }
 }

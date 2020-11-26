@@ -1,5 +1,6 @@
 package com.happy3w.toolkits.convert;
 
+import com.happy3w.toolkits.utils.PrimitiveTypeUtil;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -18,5 +19,19 @@ public class TciKey<S, T> implements ITypeConvertItemKey<S, T> {
     public TciKey(Class<S> sourceType, Class<T> targetType) {
         this.sourceType = sourceType;
         this.targetType = targetType;
+    }
+
+    @Override
+    public String toString() {
+        return createDesc(sourceType, targetType);
+    }
+
+    public TciKey<S, T> objTypeKey() {
+        Class<S> st = PrimitiveTypeUtil.toObjType(sourceType);
+        Class<T> tt = PrimitiveTypeUtil.toObjType(targetType);
+        if (st != sourceType || tt != targetType) {
+            return new TciKey<>(st, tt);
+        }
+        return this;
     }
 }
