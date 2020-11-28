@@ -13,7 +13,7 @@ public class TypeItemManager<T extends ITypeItem> {
     }
 
     public T findItemByType(Class type) {
-        return itemMap.get(type);
+        return itemMap.getOrDefault(type, null);
     }
 
     public T findItemInheritType(Class type) {
