@@ -19,14 +19,14 @@ repositories {
 }
 
 dependencies {
-	compileOnly 'org.projectlombok:lombok:1.18.2'
+	compileOnly 'org.projectlombok:lombok:1.18.12'
 
-	annotationProcessor 'org.projectlombok:lombok:1.18.2'
+	annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
 	testImplementation 'junit:junit:4.12'
-	testCompileOnly 'org.projectlombok:lombok:1.18.2'
-	testAnnotationProcessor 'org.projectlombok:lombok:1.18.2'
+	testCompileOnly 'org.projectlombok:lombok:1.18.12'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
 }
-
+//compileJava.options.compilerArgs.add("-Xlint:unchecked")
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
