@@ -49,7 +49,7 @@ public class DimCombinationMaker<K, V> {
      */
     public Stream<DimCombineDetail<K, V>> generateDetail() {
         Stream<DimCombineDetail<K, V>> detailStream = generateNormal()
-                .map(r -> new DimCombineDetail(r));
+                .map(r -> new DimCombineDetail<>(r));
         if (withOverRelation) {
             return initOverRelation(detailStream);
         }
@@ -150,7 +150,7 @@ public class DimCombinationMaker<K, V> {
 
         public static <K, V> CombineSpliterator<K, V> of(List<Pair<K, List<V>>> dimensions) {
             int maxSize = calculateMaxSize(dimensions);
-            return new CombineSpliterator(dimensions, maxSize);
+            return new CombineSpliterator<>(dimensions, maxSize);
         }
 
         private static <V, K> int calculateMaxSize(List<Pair<K, List<V>>> dimensions) {

@@ -94,7 +94,7 @@ public class ListUtils {
     }
 
     public static <T> List<T> filter(Iterable<T> iterable, Predicate<T> predicate) {
-        List result = new ArrayList();
+        List<T> result = new ArrayList<>();
 
         for (T element : iterable) {
             if (predicate.test(element)) {

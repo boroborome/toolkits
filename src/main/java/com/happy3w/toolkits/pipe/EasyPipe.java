@@ -46,7 +46,7 @@ public abstract class EasyPipe<InType, OutType> implements IEasyPipe<InType> {
     }
 
     private static <T, R> EasyPipeBuilder<T, T, R> createBuilder(EasyPipe<T, R> pipe) {
-        return new EasyPipeBuilder(pipe, pipe);
+        return new EasyPipeBuilder<>(pipe, pipe);
     }
 
     public static <T, R> ClassifyPipeBuilder<T, T, R> classify(Function<T, R> mapMethod) {

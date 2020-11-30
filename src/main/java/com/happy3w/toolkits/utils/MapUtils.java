@@ -42,9 +42,9 @@ public class MapUtils {
         return (V) safeRead(map, mapKeys.toArray(new MapKey[otherKeys.length]));
     }
 
-    public static <K, V> V safeRead(Map<K, V> map, MapKey... mapKeys) {
+    public static <K, V> V safeRead(Map<K, V> map, MapKey<?, ?>... mapKeys) {
         Object v = map;
-        for (MapKey mapKey : mapKeys) {
+        for (MapKey<?, ?> mapKey : mapKeys) {
             Map m = (Map) v;
             v = safeRead(m, mapKey.key, mapKey.supplier);
         }
