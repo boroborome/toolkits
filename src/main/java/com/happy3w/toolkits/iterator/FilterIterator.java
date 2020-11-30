@@ -4,12 +4,12 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class FilterIterator<T> extends NeedFindIterator<T> {
-    protected final Iterator<T> innerIterator;
-    protected final Predicate<T> predicate;
+public class FilterIterator<T, E> extends NeedFindIterator<T> {
+    protected final Iterator<E> innerIterator;
+    protected final Predicate<E> predicate;
 
 
-    public FilterIterator(Iterator<T> innerIterator, Predicate<T> predicate) {
+    public FilterIterator(Iterator<E> innerIterator, Predicate<E> predicate) {
         this.innerIterator = innerIterator;
         this.predicate = predicate;
     }
@@ -17,9 +17,9 @@ public class FilterIterator<T> extends NeedFindIterator<T> {
     @Override
     protected Optional<T> findNext() {
         while (innerIterator.hasNext()) {
-            T value = innerIterator.next();
+            E value = innerIterator.next();
             if (predicate.test(value)) {
-                return Optional.ofNullable(value);
+                return Optional.ofNullable((T) value);
             }
         }
         return Optional.empty();
