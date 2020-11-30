@@ -6,11 +6,11 @@ import java.lang.annotation.Annotation;
 import java.util.function.Function;
 
 @Getter
-public class AnnProcessManager<DT, AT extends Annotation, PT> extends TypeProcessorManager<DT, PT, AnnProcessManager<DT, AT, PT>> {
+public class AnnotationTpm<DT, AT extends Annotation, PT> extends AbstractTypeProcessorManager<DT, PT, AnnotationTpm<DT, AT, PT>> {
     protected final Class<AT> annType;
     protected final Function<AT, PT> processGenerator;
 
-    public AnnProcessManager(Class<AT> annType, Function<AT, PT> processGenerator) {
+    public AnnotationTpm(Class<AT> annType, Function<AT, PT> processGenerator) {
         this.annType = annType;
         this.processGenerator = processGenerator;
     }
@@ -39,8 +39,8 @@ public class AnnProcessManager<DT, AT extends Annotation, PT> extends TypeProces
     }
 
     @Override
-    public AnnProcessManager<DT, AT, PT> newCopy() {
-        AnnProcessManager<DT, AT, PT> copy = new AnnProcessManager<>(annType, processGenerator);
+    public AnnotationTpm<DT, AT, PT> newCopy() {
+        AnnotationTpm<DT, AT, PT> copy = new AnnotationTpm<>(annType, processGenerator);
         copy.processMap.putAll(processMap);
         return copy;
     }

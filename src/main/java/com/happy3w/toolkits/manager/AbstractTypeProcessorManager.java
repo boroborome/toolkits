@@ -5,7 +5,7 @@ import com.happy3w.toolkits.reflect.ReflectUtil;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TypeProcessorManager<DT, PT, ST extends TypeProcessorManager<DT, PT, ST>> {
+public abstract class AbstractTypeProcessorManager<DT, PT, ST extends AbstractTypeProcessorManager<DT, PT, ST>> {
     protected Map<Class<? extends DT>, PT> processMap = new HashMap<>();
 
     public void registProcess(Class<? extends DT> dataType, PT processor) {
@@ -26,7 +26,7 @@ public class TypeProcessorManager<DT, PT, ST extends TypeProcessorManager<DT, PT
     }
 
     public ST newCopy() {
-        TypeProcessorManager<DT, PT, ST> newManager = ReflectUtil.newInstance(this.getClass());
+        AbstractTypeProcessorManager<DT, PT, ST> newManager = ReflectUtil.newInstance(this.getClass());
         newManager.processMap.putAll(processMap);
         return (ST) newManager;
     }
