@@ -1,15 +1,7 @@
 package com.happy3w.toolkits.iterator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.*;
+import java.util.function.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -27,12 +19,16 @@ public interface IEasyIterator<T> extends Iterator<T> {
         return new PeekIterator<>(this, consumeMethod);
     }
 
-    default <R> IEasyIterator<R> flatMap(Function<T, Iterator<R>> mapMethod) {
+    default <R, E extends R> IEasyIterator<R> flatMap(Function<T, Iterator<E>> mapMethod) {
         return new FlatMapIterator(this, mapMethod);
     }
 
     default IEasyIterator<T> filter(Predicate<T> predicate) {
-        return new FilterIterator<T>(this, predicate);
+        return new FilterIterator<T, T>(this, predicate);
+    }
+
+    default <E extends T> IEasyIterator<E> filter(Class<E> targetType) {
+        return new FilterIterator<E, T>(this, d -> d != null && targetType.isAssignableFrom(d.getClass()));
     }
 
     /**
@@ -62,11 +58,44 @@ public interface IEasyIterator<T> extends Iterator<T> {
         }
     }
 
-    default IEasyIterator<T> concat(IEasyIterator<T>... its) {
-        List<IEasyIterator<T>> newIts = new ArrayList<>();
+    default <C> C foldLeftF(Supplier<C> collectorSupplier, BiFunction<C, T, C> action) {
+        C c = collectorSupplier.get();
+        while (hasNext()) {
+            c = action.apply(c, next());
+        }
+        return c;
+    }
+
+
+    default <C> C foldLeftC(Supplier<C> collectorSupplier, BiConsumer<C, T> action) {
+        C c = collectorSupplier.get();
+        while (hasNext()) {
+            action.accept(c, next());
+        }
+        return c;
+    }
+
+    default <E extends T> IEasyIterator<T> concat(Iterator<E>... its) {
+        List<Iterator<? extends T>> newIts = new ArrayList<>();
         newIts.add(this);
         newIts.addAll(Arrays.asList(its));
-        return EasyIterator.from(newIts.iterator())
+        return EasyIterator.fromIterator(newIts.iterator())
+                .flatMap(it -> it);
+    }
+
+    default <E extends T> IEasyIterator<T> concatMix(Object... its) {
+        List<Iterator<? extends T>> newIts = new ArrayList<>();
+        newIts.add(this);
+        for (Object value : its) {
+            if (value instanceof Iterator) {
+                newIts.add((Iterator<? extends T>) value);
+            } else if (value instanceof Iterable) {
+                newIts.add(((Iterable<? extends T>) value).iterator());
+            } else {
+                newIts.add(EasyIterator.<T>of((T) value));
+            }
+        }
+        return EasyIterator.fromIterator(newIts.iterator())
                 .flatMap(it -> it);
     }
 
