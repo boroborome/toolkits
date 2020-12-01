@@ -1,6 +1,5 @@
 package com.happy3w.toolkits.iterator;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
@@ -30,7 +29,13 @@ public abstract class EasyIterator<T> implements IEasyIterator<T> {
     }
 
     public static <T> IEasyIterator<T> of(T... values) {
-        return new IteratorExtIterator<>(Arrays.asList(values).iterator());
+        if (values == null || values.length == 0) {
+            return EMPTY_IT;
+        }
+        if (values.length == 1) {
+            return new SingleIterator<>(values[0]);
+        }
+        return new ArrayIterator<>(values);
     }
 
     public static IntRangeIterator range(int start, int end) {
