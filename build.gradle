@@ -24,6 +24,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
 	testImplementation 'junit:junit:4.12'
+	testImplementation 'com.alibaba:fastjson:1.2.29'
 	testCompileOnly 'org.projectlombok:lombok:1.18.12'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
 }

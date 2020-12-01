@@ -1,7 +1,6 @@
 package com.happy3w.toolkits.iterator;
 
 import java.util.Iterator;
-import java.util.Optional;
 import java.util.function.Function;
 
 public class FlatMapIterator<T, R> extends NeedFindIterator<R> {
@@ -17,7 +16,7 @@ public class FlatMapIterator<T, R> extends NeedFindIterator<R> {
 
     // CHECKSTYLE:OFF
     @Override
-    protected Optional<R> findNext() {
+    protected NullableOptional<R> findNext() {
         while ((subInnerIterator == null || !subInnerIterator.hasNext())
                 && innerIterator.hasNext()) {
             T innerValue = innerIterator.next();
@@ -25,9 +24,9 @@ public class FlatMapIterator<T, R> extends NeedFindIterator<R> {
         }
 
         if (subInnerIterator != null && subInnerIterator.hasNext()) {
-            return Optional.ofNullable(subInnerIterator.next());
+            return NullableOptional.of(subInnerIterator.next());
         }
-        return Optional.empty();
+        return NullableOptional.empty();
     }
     // CHECKSTYLE:ON
 }
