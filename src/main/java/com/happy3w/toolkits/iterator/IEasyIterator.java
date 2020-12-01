@@ -149,6 +149,14 @@ public interface IEasyIterator<T> extends Iterator<T> {
         return values;
     }
 
+    default Set<T> toSet() {
+        Set<T> values = new HashSet<>();
+        while (hasNext()) {
+            values.add(next());
+        }
+        return values;
+    }
+
     default Stream<T> stream() {
         Iterable<T> iterable = () -> this;
         return StreamSupport.stream(iterable.spliterator(), false);
