@@ -1,19 +1,13 @@
 package com.happy3w.toolkits.manager;
 
-import lombok.NoArgsConstructor;
-
 import java.util.Stack;
 
-@NoArgsConstructor
-public class InheritConfigManager<DT, CT> extends AbstractConfigManager<DT, CT, InheritConfigManager<DT, CT>> {
-
-    public InheritConfigManager(IConfigDetector<CT> configDetector) {
-        this.configDetector = configDetector;
-    }
+public class InheritFinder<CT> implements IConfigFinder<CT> {
+    public static final InheritFinder<?> INSTANCE = new InheritFinder<>();
 
     @Override
-    public CT findByType(Class<? extends DT> dataType) {
-        CT config = findByTypeStep(dataType);
+    public CT find(Class<?> dataType, ConfigManager<CT> manager) {
+        CT config = manager.findByTypeStep(dataType);
         if (config != null) {
             return config;
         }
@@ -22,9 +16,9 @@ public class InheritConfigManager<DT, CT> extends AbstractConfigManager<DT, CT, 
         collectSuper(dataType, typeStack);
         while (!typeStack.isEmpty()) {
             Class<?> type = typeStack.pop();
-            CT c = findByTypeStep(type);
+            CT c = manager.findByTypeStep(type);
             if (c != null) {
-                regist(dataType, c);
+                manager.regist(dataType, c);
                 return c;
             }
             collectSuper(type, typeStack);
