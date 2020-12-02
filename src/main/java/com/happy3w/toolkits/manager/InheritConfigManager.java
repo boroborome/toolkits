@@ -1,8 +1,16 @@
 package com.happy3w.toolkits.manager;
 
+import lombok.NoArgsConstructor;
+
 import java.util.Stack;
 
+@NoArgsConstructor
 public class InheritConfigManager<DT, CT> extends AbstractConfigManager<DT, CT, InheritConfigManager<DT, CT>> {
+
+    public InheritConfigManager(IConfigDetector<CT> configDetector) {
+        this.configDetector = configDetector;
+    }
+
     @Override
     public CT findByType(Class<? extends DT> dataType) {
         CT config = findByTypeStep(dataType);
