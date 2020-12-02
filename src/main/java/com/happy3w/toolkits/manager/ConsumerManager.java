@@ -2,7 +2,7 @@ package com.happy3w.toolkits.manager;
 
 import java.util.function.Consumer;
 
-public class ConsumerTpm<CT> extends AbstractConfigManager<Consumer<? extends CT>, ConsumerTpm<CT>> {
+public class ConsumerManager<CT> extends AbstractConfigManager<Consumer<? extends CT>, ConsumerManager<CT>> {
 
     public <T extends CT> void registConsumer(Class<T> dataType, Consumer<T> consumer) {
         this.regist(dataType, consumer);
@@ -19,8 +19,8 @@ public class ConsumerTpm<CT> extends AbstractConfigManager<Consumer<? extends CT
         }
     }
 
-    public static <CT> ConsumerTpm<CT> inherit() {
-        return new ConsumerTpm<CT>()
+    public static <CT> ConsumerManager<CT> inherit() {
+        return new ConsumerManager<CT>()
                 .finder((IConfigFinder<Consumer<? extends CT>>) InheritFinder.INSTANCE);
     }
 }
