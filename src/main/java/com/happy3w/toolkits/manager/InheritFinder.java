@@ -6,7 +6,7 @@ public class InheritFinder<CT> implements IConfigFinder<CT> {
     public static final InheritFinder<?> INSTANCE = new InheritFinder<>();
 
     @Override
-    public CT find(Class<?> dataType, ConfigManager<CT> manager) {
+    public CT find(Class<?> dataType, AbstractConfigManager<CT, ?> manager) {
         CT config = manager.findByTypeStep(dataType);
         if (config != null) {
             return config;
