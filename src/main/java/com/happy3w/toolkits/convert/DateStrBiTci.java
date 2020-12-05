@@ -13,8 +13,8 @@ import java.util.Map;
 @Getter
 public class DateStrBiTci extends AbstractBiTci<Date, String> {
 
-    private Map<String, DateFormat> formaterMap = new HashMap<>();
-    private DateFormat defaultDateFormater;
+    private Map<String, DateFormat> formatterMap = new HashMap<>();
+    private DateFormat defaultDateFormatter;
 
     public DateStrBiTci() {
         super(Date.class, String.class);
@@ -26,17 +26,17 @@ public class DateStrBiTci extends AbstractBiTci<Date, String> {
 
     @Override
     public String toTarget(Date source) {
-        return defaultDateFormater.format(source);
+        return defaultDateFormatter.format(source);
     }
 
     @Override
     public Date toSource(String source) {
-        synchronized (formaterMap) {
-            Date value = tryParse(source, defaultDateFormater);
+        synchronized (formatterMap) {
+            Date value = tryParse(source, defaultDateFormatter);
             if (value != null) {
                 return value;
             }
-            for (DateFormat dateFormat : formaterMap.values()) {
+            for (DateFormat dateFormat : formatterMap.values()) {
                 value = tryParse(source, dateFormat);
                 if (value != null) {
                     return value;
@@ -57,16 +57,16 @@ public class DateStrBiTci extends AbstractBiTci<Date, String> {
 
     public DateStrBiTci appendConfig(String config) {
         SimpleDateFormat sdf = new SimpleDateFormat(config);
-        formaterMap.put(config, sdf);
+        formatterMap.put(config, sdf);
         return this;
     }
 
     public DateStrBiTci defaultConfig(String config) {
         if (StringUtils.hasText(config)) {
             SimpleDateFormat sdf = new SimpleDateFormat(config);
-            defaultDateFormater = sdf;
+            defaultDateFormatter = sdf;
         } else {
-            defaultDateFormater = null;
+            defaultDateFormatter = null;
         }
         return this;
     }
