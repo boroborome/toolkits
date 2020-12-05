@@ -8,6 +8,15 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class TypeConverterTest {
+    @Test
+    public void should_convert_str_to_date_with_yyyyMMdd_success() {
+        TypeConverter converter = TypeConverter.INSTANCE.newCopy()
+                .regist(new DateStrBiTci()
+                .defaultConfig("yyyyMMdd"));
+
+        Date date = converter.convert("20200705", Date.class);
+        Assert.assertEquals(Timestamp.valueOf("2020-07-05 00:00:00").getTime(), date.getTime());
+    }
 
     @Test
     public void should_convert_date_to_long_success() {

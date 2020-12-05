@@ -40,7 +40,7 @@ public class TypeConverter {
         return newConverter;
     }
 
-    public void regist(ITypeConvertItem<?, ?> convertItem) {
+    public TypeConverter regist(ITypeConvertItem<?, ?> convertItem) {
         tciMap.put(convertItem.getClass(), convertItem);
         regist(convertItem, convertItem);
         if (convertItem instanceof IBiTypeConvertItem) {
@@ -48,9 +48,10 @@ public class TypeConverter {
             ITypeConvertItem<?, ?> reversedTci = biTci.reverse();
             regist(reversedTci, reversedTci);
         }
+        return this;
     }
 
-    private void regist(ITypeConvertItemKey<?, ?> key, ITypeConvertItem<?, ?> item) {
+    private TypeConverter regist(ITypeConvertItemKey<?, ?> key, ITypeConvertItem<?, ?> item) {
         if (key.getSourceType() == null) {
             key = new TciKey<>(Void.class, key.getTargetType());
         }
@@ -59,6 +60,7 @@ public class TypeConverter {
         final Class<?> targetType = key.getTargetType();
         items.removeIf(it -> it.getTargetType() == targetType);
         items.add(item);
+        return this;
     }
 
     public <S, T> T convert(S source, Class<T> targetType) {
