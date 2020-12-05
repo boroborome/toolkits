@@ -220,3 +220,10 @@ EasyIterator.from(studentStream)                                                
 
 ### 其他
 #### 原来的SimpleConverter变成了TypeConverter，使用方法类似
+
+
+## Version Logs
+### 0.0.6
+- 修复TypeConverter中bugs
+- 强化EasyIterator
+- 实现根据类型管理信息的ConfigManager
