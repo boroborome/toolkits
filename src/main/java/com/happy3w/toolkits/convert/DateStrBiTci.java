@@ -66,6 +66,11 @@ public class DateStrBiTci extends AbstractBiTci<Date, String> {
         return this;
     }
 
+    public DateStrBiTci removeConfig(String config) {
+        formatterMap.remove(config);
+        return this;
+    }
+
     public DateStrBiTci defaultConfig(String config) {
         if (StringUtils.hasText(config)) {
             SimpleDateFormat sdf = new SimpleDateFormat(config);
