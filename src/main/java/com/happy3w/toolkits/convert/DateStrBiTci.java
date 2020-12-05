@@ -24,6 +24,11 @@ public class DateStrBiTci extends AbstractBiTci<Date, String> {
         appendConfig("yyyy/MM/dd");
     }
 
+    public DateStrBiTci(String defaultFormat) {
+        super(Date.class, String.class);
+        defaultConfig(defaultFormat);
+    }
+
     @Override
     public String toTarget(Date source) {
         return defaultDateFormatter.format(source);
