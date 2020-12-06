@@ -10,14 +10,14 @@ Add the Maven dependency:
 <dependency>
     <groupId>com.happy3w</groupId>
     <artifactId>toolkits</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
 </dependency>
 ```
 
 Add the Gradle dependency:
 
 ```groovy
-implementation 'com.happy3w:toolkits:0.0.5'
+implementation 'com.happy3w:toolkits:0.0.6'
 ```
 
 ## 组件介绍
