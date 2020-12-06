@@ -48,7 +48,7 @@ public class ReflectUtil {
             return method.invoke(owner, params);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(MessageFormat.format("Failed to run method {0} for object {1}, Error is :{2}",
-                    method, owner, e.getMessage(), e));
+                    method, owner, e.getMessage()), e);
         }
     }
 }
