@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TypeItem<T, D> implements ITypeItem<T> {
-    private Class<T> type;
+public class TypeItem<D> implements ITypeItem {
+    private Class<?> type;
     private D data;
 }

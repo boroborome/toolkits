@@ -1,13 +1,13 @@
 package com.happy3w.toolkits.manager;
 
-public class TypeItemManager<DT, T extends ITypeItem<DT>> extends AbstractConfigManager<T, TypeItemManager<DT, T>> {
+public class TypeItemManager<DT extends ITypeItem> extends AbstractConfigManager<DT, TypeItemManager<DT>> {
 
-    public void registItem(T item) {
+    public void registItem(DT item) {
         regist(item.getType(), item);
     }
 
-    public static <DT, T extends ITypeItem<DT>> TypeItemManager<DT, T> inherit() {
-        return new TypeItemManager<DT, T>()
-                .finder((IConfigFinder<T>) InheritFinder.INSTANCE);
+    public static <DT extends ITypeItem> TypeItemManager<DT> inherit() {
+        return new TypeItemManager<DT>()
+                .finder((IConfigFinder<DT>) InheritFinder.INSTANCE);
     }
 }
