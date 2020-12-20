@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.Date;
 
 public class TypeConverterTest {
@@ -12,10 +13,20 @@ public class TypeConverterTest {
     public void should_convert_str_to_date_with_yyyyMMdd_success() {
         TypeConverter converter = TypeConverter.INSTANCE.newCopy()
                 .regist(new DateStrBiTci()
-                .defaultConfig("yyyyMMdd"));
+                        .defaultConfig("yyyyMMdd"));
 
         Date date = converter.convert("20200705", Date.class);
         Assert.assertEquals(Timestamp.valueOf("2020-07-05 00:00:00").getTime(), date.getTime());
+    }
+
+    @Test
+    public void should_convert_str_to_date_with_default_success() throws ParseException {
+        TypeConverter converter = TypeConverter.INSTANCE;
+        converter.findTci(DateStrBiTci.class)
+                .appendConfig("yyyyMMdd");
+
+        Date date = converter.convert("2020-11-17 14:26:41", Date.class);
+        Assert.assertEquals(Timestamp.valueOf("2020-11-17 14:26:41").getTime(), date.getTime());
     }
 
     @Test
