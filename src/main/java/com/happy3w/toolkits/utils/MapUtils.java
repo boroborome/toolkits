@@ -62,6 +62,8 @@ public class MapUtils {
         }
     }
 
+    // replaced by ConfigManager.inherit();
+    @Deprecated
     public static <T> T findByType(Class key, Map<Class, T> map) {
         T t = map.get(key);
         if (t != null) {
