@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @AllArgsConstructor
@@ -19,7 +20,7 @@ public class FieldAccessor {
     private Method setMethod;
 
     public static FieldAccessor from(String fieldName, Class owner) {
-        return from(fieldName, owner.getDeclaredMethods());
+        return from(fieldName, owner.getMethods());
     }
 
     public static FieldAccessor from(Field field) {
@@ -27,6 +28,10 @@ public class FieldAccessor {
     }
 
     public static FieldAccessor from(String fieldName, Method[] methods) {
+        return from(fieldName, methods, null);
+    }
+
+    private static FieldAccessor from(String fieldName, Method[] methods, Class owner) {
         String capitalizeName = StringUtils.capitalize(fieldName);
         Method getter = findGetter(capitalizeName, methods);
         Method setter = findSetter(capitalizeName, methods);
@@ -34,18 +39,35 @@ public class FieldAccessor {
             return null;
         }
 
-        Field field;
-        try {
-            field = getter.getDeclaringClass().getDeclaredField(fieldName);
-        } catch (NoSuchFieldException e) {
-            field = null;
-        }
+        Field field = findField(fieldName, owner == null ? getter.getDeclaringClass() : owner);
 
         return new FieldAccessor(fieldName,
                 field,
                 getter.getReturnType(),
                 getter,
                 setter);
+    }
+
+    private static Field findField(String fieldName, Class ownerType) {
+        Class currentType = ownerType;
+        while (currentType != null) {
+            Field field = findField(fieldName, currentType.getDeclaredFields());
+            if (field != null) {
+                return field;
+            }
+            currentType = currentType.getSuperclass();
+        }
+        return null;
+    }
+
+    private static Field findField(String fieldName, Field[] fields) {
+        for (int i = fields.length - 1; i >= 0; i--) {
+            Field field = fields[i];
+            if (Objects.equals(fieldName, field.getName())) {
+                return field;
+            }
+        }
+        return null;
     }
 
     private static Method findSetter(String capitalizeName, Method[] methods) {
