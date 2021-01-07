@@ -5,6 +5,8 @@ import lombok.Setter;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.List;
+
 public class FieldAccessorTest {
 
     @Test
@@ -23,6 +25,12 @@ public class FieldAccessorTest {
         Assert.assertEquals("getParentName", accessor.getGetMethod().getName());
         Assert.assertEquals("setParentName", accessor.getSetMethod().getName());
         Assert.assertNotNull("parentName", accessor.getField().getName());
+    }
+
+    @Test
+    public void givenChildClassReturnAllFieldsSuccess() {
+        List<FieldAccessor> accessors = FieldAccessor.allFieldAccessors(ChildClass.class);
+        Assert.assertEquals(2, accessors.size());
     }
 
     @Getter

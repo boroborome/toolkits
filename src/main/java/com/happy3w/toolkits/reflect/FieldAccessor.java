@@ -97,12 +97,20 @@ public class FieldAccessor {
 
     public static List<FieldAccessor> allFieldAccessors(Class dataType) {
         List<FieldAccessor> accessors = new ArrayList<>();
-        for (Field field : dataType.getDeclaredFields()) {
+        Class currentType = dataType;
+        while (currentType != null) {
+            collectFieldAccessor(currentType, accessors);
+            currentType = currentType.getSuperclass();
+        }
+        return accessors;
+    }
+
+    private static void collectFieldAccessor(Class currentType, List<FieldAccessor> accessors) {
+        for (Field field : currentType.getDeclaredFields()) {
             FieldAccessor accessor = FieldAccessor.from(field);
             if (accessor != null) {
                 accessors.add(accessor);
             }
         }
-        return accessors;
     }
 }
