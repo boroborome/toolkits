@@ -8,4 +8,4 @@
 - ConfigManager 根据数据类型自动加载配置的配置管理工具
 - EasyPipe Pipe和Stream也很接近，主要差别是Stream是拉取数据，数据是一条线；而Pipe是推送式，允许数据因为条件不同而分叉走不同的逻辑。
 
-详细使用方法参见 [https://boroborome.github.io/handbook/toolkits/](https://boroborome.github.io/handbook/toolkits/)
+详细使用方法参见 [https://boroborome.github.io/handbook/toolkits.html](https://boroborome.github.io/handbook/toolkits.html)
