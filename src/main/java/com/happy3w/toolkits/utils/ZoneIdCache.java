@@ -9,6 +9,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ZoneIdCache {
+    private  ZoneIdCache() {
+
+    }
+
     private static Map<String, ZoneIdResult> zoneIdMap = new ConcurrentHashMap<>();
 
     public static final ZoneId BEIJING_ZONE_ID = getZoneId("+08:00");
@@ -28,12 +32,8 @@ public class ZoneIdCache {
             return null;
         }
 
-        ZoneIdResult result = zoneIdMap.get(zoneIdStr);
-        if (result == null) {
-            ZoneId zoneId = ZoneId.of(zoneIdStr).normalized();
-            result = new ZoneIdResult(zoneId);
-            zoneIdMap.put(zoneIdStr, result);
-        }
+        ZoneIdResult result = zoneIdMap.computeIfAbsent(zoneIdStr,
+                key -> new ZoneIdResult(ZoneId.of(key).normalized()));
         return result.zoneId;
     }
 
