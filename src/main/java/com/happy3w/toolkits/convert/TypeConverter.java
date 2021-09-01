@@ -1,6 +1,6 @@
 package com.happy3w.toolkits.convert;
 
-import com.happy3w.toolkits.utils.ListUtils;
+import com.happy3w.java.ext.ListUtils;
 import com.happy3w.toolkits.utils.PrimitiveTypeUtil;
 
 import java.text.MessageFormat;

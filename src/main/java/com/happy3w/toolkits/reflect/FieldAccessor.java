@@ -1,6 +1,6 @@
 package com.happy3w.toolkits.reflect;
 
-import com.happy3w.toolkits.utils.StringUtils;
+import com.happy3w.java.ext.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

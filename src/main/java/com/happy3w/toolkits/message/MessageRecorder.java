@@ -1,6 +1,6 @@
 package com.happy3w.toolkits.message;
 
-import com.happy3w.toolkits.utils.ListUtils;
+import com.happy3w.java.ext.ListUtils;
 import lombok.Getter;
 
 import java.text.MessageFormat;

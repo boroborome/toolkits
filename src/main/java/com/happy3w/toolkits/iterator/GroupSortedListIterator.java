@@ -1,6 +1,6 @@
 package com.happy3w.toolkits.iterator;
 
-import com.happy3w.toolkits.utils.Pair;
+import com.happy3w.java.ext.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

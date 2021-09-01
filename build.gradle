@@ -19,6 +19,7 @@ repositories {
 }
 
 dependencies {
+	api('com.happy3w:java-ext:0.0.1')
 	compileOnly 'org.projectlombok:lombok:1.18.12'
 
 	annotationProcessor 'org.projectlombok:lombok:1.18.12'
