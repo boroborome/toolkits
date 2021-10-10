@@ -15,17 +15,26 @@ import java.util.Stack;
 public class TypeConverter {
     public static final TypeConverter INSTANCE = new TypeConverter();
     static {
+        INSTANCE.regist(new BoolIntBiTci());
+        INSTANCE.regist(new BoolStrBiTci());
         INSTANCE.regist(new DateLongBiTci());
-        INSTANCE.regist(new NumStrTci());
-        INSTANCE.regist(new NumBigDecimalTci());
-        INSTANCE.regist(new NullStrTci());
         INSTANCE.regist(new DateStrBiTci());
-        INSTANCE.regist(new StrLongTci());
-        INSTANCE.regist(new StrIntegerTci());
+        INSTANCE.regist(new NullStrTci());
+        INSTANCE.regist(new NumBigDecimalTci());
+        INSTANCE.regist(new NumByteTci());
+        INSTANCE.regist(new NumDoubleTci());
+        INSTANCE.regist(new NumFloatTci());
+        INSTANCE.regist(new NumIntegerTci());
+        INSTANCE.regist(new NumLongTci());
+        INSTANCE.regist(new NumShortTci());
+        INSTANCE.regist(new NumStrTci());
         INSTANCE.regist(new StrBigDecimalTci());
+        INSTANCE.regist(new StrByteTci());
         INSTANCE.regist(new StrDoubleTci());
         INSTANCE.regist(new StrFloatTci());
-        INSTANCE.regist(new BoolStrBiTci());
+        INSTANCE.regist(new StrIntegerTci());
+        INSTANCE.regist(new StrLongTci());
+        INSTANCE.regist(new StrShortTci());
     }
 
     private Map<ITypeConvertItemKey<?, ?>, ITypeConvertItem<?, ?>> convertItemMap = new HashMap<>();
