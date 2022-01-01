@@ -72,14 +72,14 @@ public class DependSorter<V, K> {
         while (!nodeStack.isEmpty()) {
             GraphNode<V, K> node = nodeStack.pop();
             node.setDepth(maxDepth(node.getUpstreamNodes()) + 1);
-            checkCircleByDepth(node, maxDepth);
-            for (GraphNode<V, K> g : node.getDownstreamNodes()) {
-                nodeStack.push(g);
+            ensureDepthInRange(node, maxDepth);
+            for (GraphNode<V, K> n : node.getDownstreamNodes()) {
+                nodeStack.push(n);
             }
         }
     }
 
-    private static void checkCircleByDepth(GraphNode node, int maxDepth) {
+    private static void ensureDepthInRange(GraphNode node, int maxDepth) {
         if (node.getDepth() > maxDepth) {
             throw new IllegalArgumentException("There must be a circle with node:" + node.getValue());
         }
