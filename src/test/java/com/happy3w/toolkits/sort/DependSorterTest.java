@@ -1,5 +1,6 @@
 package com.happy3w.toolkits.sort;
 
+import com.happy3w.java.ext.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +30,23 @@ public class DependSorterTest {
                         d -> new HashSet<>(Arrays.asList(d.getName())))
                 .stream()
                 .map(DependItem::getName)
+                .collect(Collectors.joining());
+        Assert.assertEquals("ABDCE", result);
+    }
+
+
+    @Test
+    public void should_sort_by_depend_success() {
+        String result = DependSorter.sortByNeed(Arrays.asList(
+                                new Pair<>("C", "D"),
+                                new Pair<>("D", "A"),
+                                new Pair<>("D", "B"),
+                                new Pair<>("B", "A"),
+                                new Pair<>("E", "C"),
+                                new Pair<>("E", "B")
+                        )
+                )
+                .stream()
                 .collect(Collectors.joining());
         Assert.assertEquals("ABDCE", result);
     }

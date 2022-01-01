@@ -1,11 +1,14 @@
 package com.happy3w.toolkits.sort;
 
 import com.happy3w.java.ext.ListUtils;
+import com.happy3w.java.ext.Pair;
 import com.happy3w.toolkits.iterator.EasyIterator;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +17,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DependSorter<V, K> {
+
+    public static <V> List<V> sortByNeed(Iterable<Pair<V, V>> depends) {
+        Map<V, Set<V>> needsMap = new HashMap<>();
+
+        for (Pair<V, V> pair : depends) {
+            Set<V> needs = needsMap.computeIfAbsent(pair.getKey(), k -> new HashSet<>());
+            needsMap.computeIfAbsent(pair.getValue(), k -> new HashSet<>());
+            needs.add(pair.getValue());
+        }
+
+        return sort(needsMap.keySet(), needsMap::get, v -> new HashSet<>(Arrays.asList(v)));
+    }
 
     public static <V, K> List<V> sort(Iterable<V> items,
                                       Function<V, Set<K>> needsGenerator,

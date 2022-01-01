@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-class GraphNode<V, K> {
+public class GraphNode<V, K> {
     private V value;
     private Set<K> needs;
     private Set<K> provides;
