@@ -1,6 +1,7 @@
 package com.happy3w.toolkits.iterator;
 
 import java.util.Iterator;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public abstract class EasyIterator<T> implements IEasyIterator<T> {
@@ -44,5 +45,10 @@ public abstract class EasyIterator<T> implements IEasyIterator<T> {
 
     public static <T> IEasyIterator<T> emptyIterator() {
         return EMPTY_IT;
+    }
+
+    public static <T> IEasyIterator<T> concatAll(Iterator<T>... its) {
+        return EasyIterator.of(its)
+                .flatMap(Function.identity());
     }
 }
