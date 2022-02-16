@@ -26,7 +26,7 @@ public abstract class EasyIterator<T> implements IEasyIterator<T> {
     }
 
     public static <T, E extends T> IEasyIterator<T> fromIterable(Iterable<E> iterable) {
-        return iterable == null ? emptyIterator() : new IteratorExtIterator<T, E>(iterable.iterator());
+        return new IterableExtIterator(iterable);
     }
 
     public static <T> IEasyIterator<T> of(T... values) {
