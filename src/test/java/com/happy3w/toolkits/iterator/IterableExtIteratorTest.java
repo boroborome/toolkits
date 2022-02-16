@@ -1,7 +1,7 @@
 package com.happy3w.toolkits.iterator;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,6 +18,6 @@ public class IterableExtIteratorTest {
                 .concat(EasyIterator.fromIterable(set))
                 .stream()
                 .collect(Collectors.joining());
-        Assert.assertEquals("CDABE", result);
+        Assertions.assertEquals("CDABE", result);
     }
 }

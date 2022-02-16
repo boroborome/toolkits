@@ -4,8 +4,8 @@ import com.happy3w.java.ext.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,7 +30,7 @@ public class DependSorterTest {
                 .stream()
                 .map(DependItem::getName)
                 .collect(Collectors.joining());
-        Assert.assertEquals("ABDCE", result);
+        Assertions.assertEquals("ABDCE", result);
     }
 
     @Test
@@ -48,7 +48,7 @@ public class DependSorterTest {
                 .stream()
                 .map(DependItem::getName)
                 .collect(Collectors.joining());
-        Assert.assertEquals(5, result.length());
+        Assertions.assertEquals(5, result.length());
     }
 
     @Test
@@ -64,22 +64,24 @@ public class DependSorterTest {
                 )
                 .stream()
                 .collect(Collectors.joining());
-        Assert.assertEquals("ABDCE", result);
+        Assertions.assertEquals("ABDCE", result);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void should_error_with_circle() {
-        // circle: D->E->C->D
-        DependSorter.sortByNeed(Arrays.asList(
-                                new Pair<>("C", "D"),
-                                new Pair<>("D", "A"),
-                                new Pair<>("D", "E"),
-                                new Pair<>("D", "B"),
-                                new Pair<>("B", "A"),
-                                new Pair<>("E", "C"),
-                                new Pair<>("E", "B")
-                        )
-                );
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            // circle: D->E->C->D
+            DependSorter.sortByNeed(Arrays.asList(
+                            new Pair<>("C", "D"),
+                            new Pair<>("D", "A"),
+                            new Pair<>("D", "E"),
+                            new Pair<>("D", "B"),
+                            new Pair<>("B", "A"),
+                            new Pair<>("E", "C"),
+                            new Pair<>("E", "B")
+                    )
+            );
+        });
     }
 
     @Test
@@ -98,7 +100,7 @@ public class DependSorterTest {
                 )
                 .stream()
                 .collect(Collectors.joining());
-        Assert.assertEquals("AHBFGDCE", result);
+        Assertions.assertEquals("AHBFGDCE", result);
     }
 
     @Getter

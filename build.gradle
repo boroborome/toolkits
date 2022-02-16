@@ -8,6 +8,10 @@ ext {
 	description = "Some kits for common use"
 	url = 'https://github.com/boroborome/toolkits'
 	developerConnection = 'scm:git@github.com:boroborome/toolkits.git'
+
+	versions = [
+			'junit'   : '5.7.0'
+	]
 }
 
 apply plugin: 'java-library'
@@ -21,15 +25,23 @@ repositories {
 
 dependencies {
 	api('com.happy3w:java-ext:0.0.1')
+	implementation 'org.junit.jupiter:junit-jupiter:5.7.0'
 	compileOnly 'org.projectlombok:lombok:1.18.12'
 
 	annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-	testImplementation 'junit:junit:4.12'
 	testImplementation 'com.alibaba:fastjson:1.2.29'
+	testImplementation "org.junit.jupiter:junit-jupiter-api:$versions.junit"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$versions.junit"
+	testImplementation "org.junit.jupiter:junit-jupiter-params:$versions.junit"
 	testCompileOnly 'org.projectlombok:lombok:1.18.12'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
 }
+
+test {
+	useJUnitPlatform()
+}
+
 //compileJava.options.compilerArgs.add("-Xlint:unchecked")
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 

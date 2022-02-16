@@ -1,8 +1,8 @@
 package com.happy3w.toolkits.manager;
 
 import com.happy3w.toolkits.manager.ann.TestAnn;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ConfigManagerTest {
 
@@ -10,7 +10,7 @@ public class ConfigManagerTest {
     public void should_find_null_without_detector() {
         ConfigManager<String> manager = ConfigManager.inherit();
         String name = manager.findByType(TestData.class);
-        Assert.assertEquals(null, name);
+        Assertions.assertEquals(null, name);
     }
 
     @Test
@@ -19,7 +19,7 @@ public class ConfigManagerTest {
                 .regist(TestData.class, "Hi2");
 
         String name = manager.findByType(SubTestData.class);
-        Assert.assertEquals("Hi2", name);
+        Assertions.assertEquals("Hi2", name);
     }
 
     @Test
@@ -28,7 +28,7 @@ public class ConfigManagerTest {
                 .detector(new AnnotationDetector<>(TestAnn.class, a -> a.name()));
 
         String name = manager.findByType(SubTestData.class);
-        Assert.assertEquals("Hi", name);
+        Assertions.assertEquals("Hi", name);
     }
 
     private interface ITestData {
@@ -36,7 +36,7 @@ public class ConfigManagerTest {
     }
     @TestAnn(name = "Hi")
     private static class TestData implements ITestData {
-        
+
     }
 
     private static final class SubTestData extends TestData {

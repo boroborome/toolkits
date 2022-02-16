@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Date;
-
-import static org.junit.Assert.*;
 
 public class TypeItemManagerTest {
 
@@ -20,7 +18,7 @@ public class TypeItemManagerTest {
         manager.registItem(new MyTypeItem(Date.class, "Date"));
 
         MyTypeItem item = (MyTypeItem) manager.findByType(Date.class);
-        Assert.assertEquals("Date", item.getValue());
+        Assertions.assertEquals("Date", item.getValue());
     }
 
     @Getter

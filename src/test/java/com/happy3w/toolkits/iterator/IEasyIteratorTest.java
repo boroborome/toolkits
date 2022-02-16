@@ -1,13 +1,11 @@
 package com.happy3w.toolkits.iterator;
 
 import com.alibaba.fastjson.JSON;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class IEasyIteratorTest {
 
@@ -16,7 +14,7 @@ public class IEasyIteratorTest {
         List<String> result = EasyIterator.of("1")
                 .concat(EasyIterator.of("2", "3"))
                 .toList();
-        Assert.assertEquals("[\"1\",\"2\",\"3\"]", JSON.toJSONString(result));
+        Assertions.assertEquals("[\"1\",\"2\",\"3\"]", JSON.toJSONString(result));
     }
 
     @Test
@@ -24,7 +22,7 @@ public class IEasyIteratorTest {
         List<String> result = EasyIterator.of("1")
                 .concat(Arrays.asList("2", "3").iterator())
                 .toList();
-        Assert.assertEquals("[\"1\",\"2\",\"3\"]", JSON.toJSONString(result));
+        Assertions.assertEquals("[\"1\",\"2\",\"3\"]", JSON.toJSONString(result));
     }
 
     @Test
@@ -33,6 +31,6 @@ public class IEasyIteratorTest {
         List<String> result = EasyIterator.of("1", null, "3")
                 .concat(EasyIterator.of(items))
                 .toList();
-        Assert.assertEquals("[\"1\",null,\"3\",\"2\"]", JSON.toJSONString(result));
+        Assertions.assertEquals("[\"1\",null,\"3\",\"2\"]", JSON.toJSONString(result));
     }
 }

@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,10 +41,10 @@ public class EasyPipeTest {
                 new Student("Lucy", 28, 50, null)));
         agePipe.flush();
 
-        Assert.assertArrayEquals(new String[]{"Jerry", "Lucy"}, big.toArray());
-        Assert.assertArrayEquals(new String[]{"Tom", "Jim"}, small.toArray());
-        Assert.assertArrayEquals(new String[]{"Jim", "Jerry"}, pass.toArray());
-        Assert.assertArrayEquals(new String[]{"Tom", "Lucy"}, fail.toArray());
+        Assertions.assertArrayEquals(new String[]{"Jerry", "Lucy"}, big.toArray());
+        Assertions.assertArrayEquals(new String[]{"Tom", "Jim"}, small.toArray());
+        Assertions.assertArrayEquals(new String[]{"Jim", "Jerry"}, pass.toArray());
+        Assertions.assertArrayEquals(new String[]{"Tom", "Lucy"}, fail.toArray());
     }
 
     @Getter
