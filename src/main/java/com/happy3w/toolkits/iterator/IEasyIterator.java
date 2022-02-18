@@ -161,4 +161,11 @@ public interface IEasyIterator<T> extends Iterator<T> {
         Iterable<T> iterable = () -> this;
         return StreamSupport.stream(iterable.spliterator(), false);
     }
+
+    default Optional<T> findFirst() {
+        if (hasNext()) {
+            return Optional.of(next());
+        }
+        return Optional.empty();
+    }
 }
