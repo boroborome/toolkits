@@ -1,7 +1,20 @@
 package com.happy3w.toolkits.iterator;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -20,6 +33,10 @@ public interface IEasyIterator<T> extends Iterator<T> {
     }
 
     default <R, E extends R> IEasyIterator<R> flatMap(Function<T, Iterator<E>> mapMethod) {
+        return new FlatMapIterator(this, mapMethod);
+    }
+
+    default <R, E extends R> IEasyIterator<R> flatMapStream(Function<T, Stream<E>> mapMethod) {
         return new FlatMapIterator(this, mapMethod);
     }
 
@@ -167,5 +184,9 @@ public interface IEasyIterator<T> extends Iterator<T> {
             return Optional.of(next());
         }
         return Optional.empty();
+    }
+
+    default IEasyIterator<T> onEnd(Runnable endAction) {
+        return new EndActionIterator<>(this, endAction);
     }
 }
