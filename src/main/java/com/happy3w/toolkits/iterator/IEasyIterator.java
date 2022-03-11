@@ -32,12 +32,15 @@ public interface IEasyIterator<T> extends Iterator<T> {
         return new PeekIterator<>(this, consumeMethod);
     }
 
-    default <R, E extends R> IEasyIterator<R> flatMap(Function<T, Iterator<E>> mapMethod) {
-        return new FlatMapIterator(this, mapMethod);
+    default <E> IEasyIterator<E> flatMap(Function<T, Iterator<E>> mapMethod) {
+        return new FlatMapIterator<>(this, mapMethod);
     }
 
-    default <R, E extends R> IEasyIterator<R> flatMapStream(Function<T, Stream<E>> mapMethod) {
-        return new FlatMapIterator(this, mapMethod);
+    default <E> IEasyIterator<E> flatMapStream(Function<T, Stream<E>> mapMethod) {
+        return new FlatMapIterator<>(this, t -> {
+            Stream<E> stream = mapMethod.apply(t);
+            return stream.iterator();
+        });
     }
 
     default IEasyIterator<T> filter(Predicate<T> predicate) {
@@ -95,9 +98,12 @@ public interface IEasyIterator<T> extends Iterator<T> {
     default <E extends T> IEasyIterator<T> concat(Iterator<E>... its) {
         List<Iterator<? extends T>> newIts = new ArrayList<>();
         newIts.add(this);
+        for (Iterator<E> it : its) {
+            newIts.add(it);
+        }
         newIts.addAll(Arrays.asList(its));
-        return EasyIterator.fromIterator(newIts.iterator())
-                .flatMap(it -> it);
+        return EasyIterator.fromIterable(newIts)
+                .flatMap(it -> EasyIterator.fromIterator(it).map(d -> d));
     }
 
     default <E extends T> IEasyIterator<T> concatMix(Object... its) {
@@ -109,11 +115,11 @@ public interface IEasyIterator<T> extends Iterator<T> {
             } else if (value instanceof Iterable) {
                 newIts.add(((Iterable<? extends T>) value).iterator());
             } else {
-                newIts.add(EasyIterator.<T>of((T) value));
+                newIts.add(EasyIterator.of((T) value));
             }
         }
         return EasyIterator.fromIterator(newIts.iterator())
-                .flatMap(it -> it);
+                .flatMap(it -> EasyIterator.fromIterator(it).map(d -> d));
     }
 
     default IEasyIterator<T> limited(long maxSize) {
