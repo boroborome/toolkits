@@ -2,6 +2,7 @@ package com.happy3w.toolkits.iterator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -170,6 +171,17 @@ public interface IEasyIterator<T> extends Iterator<T> {
             values.add(next());
         }
         return values;
+    }
+
+    default IEasyIterator<T> sorted() {
+        Comparator<T> comp = (Comparator<T>) Comparator.naturalOrder();
+        return sorted(comp);
+    }
+
+    default IEasyIterator<T> sorted(Comparator<T> comparator) {
+        List<T> values = toList();
+        values.sort(comparator);
+        return EasyIterator.fromIterable(values);
     }
 
     default Set<T> toSet() {
