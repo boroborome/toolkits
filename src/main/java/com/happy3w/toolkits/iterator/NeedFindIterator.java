@@ -1,6 +1,6 @@
 package com.happy3w.toolkits.iterator;
 
-public abstract class NeedFindIterator<T> extends EasyIterator<T> {
+public abstract class NeedFindIterator<T> implements IEasyIterator<T> {
 
     private IteratorStatus status = IteratorStatus.needFind;
     private T nextItem;

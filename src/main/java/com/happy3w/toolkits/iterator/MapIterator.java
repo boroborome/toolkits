@@ -3,7 +3,7 @@ package com.happy3w.toolkits.iterator;
 import java.util.Iterator;
 import java.util.function.Function;
 
-public class MapIterator<T, R> extends EasyIterator<R> {
+public class MapIterator<T, R> implements IEasyIterator<R> {
     protected final Iterator<T> innerIterator;
     protected final Function<T, R> mapMethod;
 

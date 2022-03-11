@@ -2,7 +2,7 @@ package com.happy3w.toolkits.iterator;
 
 import java.util.Iterator;
 
-public class IndexedIterator<T> extends EasyIterator<IndexedItem<T>> {
+public class IndexedIterator<T> implements IEasyIterator<IndexedItem<T>> {
     protected final Iterator<T> innerIterator;
     private long currentIndex;
 

@@ -2,7 +2,7 @@ package com.happy3w.toolkits.iterator;
 
 import java.util.Iterator;
 
-public class IteratorExtIterator<T, E extends T> extends EasyIterator<T> {
+public class IteratorExtIterator<T, E extends T> implements IEasyIterator<T> {
     protected final Iterator<E> innerIterator;
 
     public IteratorExtIterator(Iterator<E> innerIterator) {

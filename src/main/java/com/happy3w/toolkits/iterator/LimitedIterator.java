@@ -2,7 +2,7 @@ package com.happy3w.toolkits.iterator;
 
 import java.util.Iterator;
 
-public class LimitedIterator<T> extends EasyIterator<T> {
+public class LimitedIterator<T> implements IEasyIterator<T> {
     protected final Iterator<T> innerIterator;
     protected final long maxSize;
     private long currentIndex;

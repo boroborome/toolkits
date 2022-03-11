@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class SplitIterator<T> extends EasyIterator<List<T>> {
+public class SplitIterator<T> implements IEasyIterator<List<T>> {
 
     protected final Iterator<T> innerIterator;
     protected final int size;

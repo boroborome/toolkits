@@ -1,6 +1,6 @@
 package com.happy3w.toolkits.iterator;
 
-public abstract class NumberRangeIterator<T extends Number> extends EasyIterator<T> {
+public abstract class NumberRangeIterator<T extends Number> implements IEasyIterator<T> {
     protected T current;
     protected T end;
     protected T step;

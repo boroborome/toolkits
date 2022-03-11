@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public abstract class EasyIterator<T> implements IEasyIterator<T> {
+public final class EasyIterator {
     public static final IEasyIterator EMPTY_IT = new IEasyIterator() {
         @Override
         public boolean hasNext() {
@@ -17,7 +17,7 @@ public abstract class EasyIterator<T> implements IEasyIterator<T> {
         }
     };
 
-    public static <T, E extends T> IEasyIterator<T> fromStream(Stream<E> stream) {
+    public static <T, E extends T> IEasyIterator<T> fromStream(Stream<T> stream) {
         return stream == null ? emptyIterator() : new IteratorExtIterator<>(stream.iterator());
     }
 
