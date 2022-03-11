@@ -22,6 +22,9 @@ public final class EasyIterator {
     }
 
     public static <T, E extends T> IEasyIterator<T> fromIterator(Iterator<E> iterator) {
+        if (iterator instanceof IEasyIterator) {
+            return (IEasyIterator<T>) iterator;
+        }
         return iterator == null ? emptyIterator() : new IteratorExtIterator<>(iterator);
     }
 
