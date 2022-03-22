@@ -12,8 +12,7 @@ public class StepAction<T> {
     private final BiConsumer<Long, T> action;
 
     public StepAction(long step, Consumer<Long> action) {
-        this.step = step;
-        this.action = (s, p) -> action.accept(s);
+        this(step, (s, p) -> action.accept(s));
     }
 
     public StepAction(long step, BiConsumer<Long, T> action) {
