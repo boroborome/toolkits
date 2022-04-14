@@ -2,41 +2,62 @@ package com.happy3w.toolkits.reaction;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 public class DataReaction {
+    private List<BasketHolder> holders = new ArrayList<>();
     private Map<String, BasketHolder> basketsMap = new HashMap<>();
 
     public <T> DataReaction withBasket(String basketName, BiConsumer<Set<T>, DataReaction> basketConsumer) {
-        basketsMap.put(basketName, new BasketHolder(basketName, basketConsumer));
+        BasketHolder existHolder = basketsMap.get(basketName);
+        if (existHolder != null) {
+            holders.remove(existHolder);
+        }
+
+        BasketHolder newHolder = new BasketHolder(basketName, basketConsumer);
+        holders.add(newHolder);
+        basketsMap.put(basketName, newHolder);
         return this;
     }
 
     public DataReaction acceptDatas(String basketName, Collection values) {
+        basketsMap.get(basketName).acceptValues(values.stream());
+        return this;
+    }
+
+    public DataReaction acceptDatas(String basketName, Stream values) {
         basketsMap.get(basketName).acceptValues(values);
         return this;
     }
 
     public void react() {
         while (true) {
-            Optional<BasketHolder> holderOpt = basketsMap.values().stream()
-                    .filter(holder -> !holder.values.isEmpty())
-                    .findFirst();
-            if (!holderOpt.isPresent()) {
+            BasketHolder runHolder = findNeedRunHolder();
+            if (runHolder == null) {
                 break;
             }
 
-            BasketHolder curHolder = holderOpt.get();
-            Set orgValue = new HashSet(curHolder.getValues());
-            curHolder.getValues().clear();
-            curHolder.getConsumer().accept(orgValue, this);
+            Set orgValue = new HashSet(runHolder.getValues());
+            runHolder.getValues().clear();
+            runHolder.getConsumer().accept(orgValue, this);
         }
+    }
+
+    private BasketHolder findNeedRunHolder() {
+        for (BasketHolder holder : holders) {
+            if (!holder.values.isEmpty()) {
+                return holder;
+            }
+        }
+        return null;
     }
 
     @Getter
@@ -51,13 +72,13 @@ public class DataReaction {
             this.consumer = consumer;
         }
 
-        public void acceptValues(Collection values) {
-            for (Object v : values) {
+        public void acceptValues(Stream values) {
+            values.forEach(v -> {
                 if (!existValues.contains(v)) {
                     existValues.add(v);
                     this.values.add(v);
                 }
-            }
+            });
         }
     }
 }
