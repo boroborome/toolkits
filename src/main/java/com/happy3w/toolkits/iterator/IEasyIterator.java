@@ -207,4 +207,8 @@ public interface IEasyIterator<T> extends Iterator<T> {
     default IEasyIterator<T> onEnd(Runnable endAction) {
         return new EndActionIterator<>(this, endAction);
     }
+
+    default IEasyIterator<T> endWhen(Predicate<T> predicate) {
+        return new EndWhenIterator<>(this, predicate);
+    }
 }

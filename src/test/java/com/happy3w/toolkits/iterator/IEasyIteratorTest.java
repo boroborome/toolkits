@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class IEasyIteratorTest {
 
@@ -32,5 +33,13 @@ public class IEasyIteratorTest {
                 .concat(EasyIterator.of(items))
                 .toList();
         Assertions.assertEquals("[\"1\",null,\"3\",\"2\"]", JSON.toJSONString(result));
+    }
+
+    @Test
+    public void should_end_with_predicate() {
+        List<String> result = EasyIterator.of("1", "2", "3", "4")
+                .endWhen(item -> Objects.equals(item, "3"))
+                .toList();
+        Assertions.assertEquals("[\"1\",\"2\"]", JSON.toJSONString(result));
     }
 }
