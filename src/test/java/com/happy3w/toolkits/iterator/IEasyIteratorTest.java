@@ -37,9 +37,10 @@ public class IEasyIteratorTest {
 
     @Test
     public void should_end_with_predicate() {
-        List<String> result = EasyIterator.of("1", "2", "3", "4")
+        String result = EasyIterator.of("1", "2", "3", "4")
                 .endWhen(item -> Objects.equals(item, "3"))
-                .toList();
-        Assertions.assertEquals("[\"1\",\"2\"]", JSON.toJSONString(result));
+                .foldLeftC(new StringBuilder(), (b, s) -> b.append(s))
+                .toString();
+        Assertions.assertEquals("12", result);
     }
 }

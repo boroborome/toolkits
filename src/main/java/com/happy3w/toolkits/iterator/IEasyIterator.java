@@ -87,13 +87,11 @@ public interface IEasyIterator<T> extends Iterator<T> {
         return c;
     }
 
-
-    default <C> C foldLeftC(Supplier<C> collectorSupplier, BiConsumer<C, T> action) {
-        C c = collectorSupplier.get();
+    default <C> C foldLeftC(C container, BiConsumer<C, T> action) {
         while (hasNext()) {
-            action.accept(c, next());
+            action.accept(container, next());
         }
-        return c;
+        return container;
     }
 
     default <E extends T> IEasyIterator<T> concat(Iterator<E>... its) {
