@@ -209,4 +209,12 @@ public interface IEasyIterator<T> extends Iterator<T> {
     default IEasyIterator<T> endWhen(Predicate<T> predicate) {
         return new EndWhenIterator<>(this, predicate);
     }
+
+    default <K> IEasyIterator<T> distinct() {
+        return distinct(Function.identity());
+    }
+
+    default <K> IEasyIterator<T> distinct(Function<T, K> keyGenerator) {
+        return new DistinctIterator<>(this, keyGenerator);
+    }
 }

@@ -43,4 +43,13 @@ public class IEasyIteratorTest {
                 .toString();
         Assertions.assertEquals("12", result);
     }
+
+    @Test
+    public void should_distinct_success() {
+        String result = EasyIterator.of("1", "2", "1", "3")
+                .distinct()
+                .foldLeftC(new StringBuilder(), (b, s) -> b.append(s))
+                .toString();
+        Assertions.assertEquals("123", result);
+    }
 }
