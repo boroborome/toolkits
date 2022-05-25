@@ -1,6 +1,6 @@
 
 group = 'com.happy3w'
-version = '1.0.3'
+version = '1.0.4'
 ext {
 	artifactId = "toolkits"
 
@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-	api('com.happy3w:java-ext:1.0.0')
+	api('com.happy3w:java-ext:1.0.1')
 	implementation 'org.junit.jupiter:junit-jupiter:5.7.0'
 	compileOnly 'org.projectlombok:lombok:1.18.12'
 
