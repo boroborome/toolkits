@@ -1,9 +1,12 @@
 package com.happy3w.toolkits.iterator;
 
+import com.happy3w.java.ext.NeedFindIterator;
+import com.happy3w.java.ext.NullableOptional;
+
 import java.util.Iterator;
 import java.util.function.Predicate;
 
-public class FilterIterator<T, E> extends NeedFindIterator<T> {
+public class FilterIterator<T, E> extends NeedFindIterator<T> implements IEasyIterator<T> {
     protected final Iterator<E> innerIterator;
     protected final Predicate<E> predicate;
 
