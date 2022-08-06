@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-	api('com.happy3w:java-ext:1.0.1')
+	api('com.happy3w:java-ext:1.0.2')
 	implementation 'org.junit.jupiter:junit-jupiter:5.7.0'
 	compileOnly 'org.projectlombok:lombok:1.18.12'
 

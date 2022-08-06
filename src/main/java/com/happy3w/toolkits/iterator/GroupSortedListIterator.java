@@ -1,5 +1,7 @@
 package com.happy3w.toolkits.iterator;
 
+import com.happy3w.java.ext.NeedFindIterator;
+import com.happy3w.java.ext.NullableOptional;
 import com.happy3w.java.ext.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +15,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class GroupSortedListIterator<T, K, V> extends NeedFindIterator<Map.Entry<K, List<V>>> {
+public class GroupSortedListIterator<T, K, V> extends NeedFindIterator<Map.Entry<K, List<V>>>
+    implements IEasyIterator<Map.Entry<K, List<V>>> {
     protected final Iterator<T> innerIterator;
     protected final Function<T, K> keyGenerator;
     protected final Function<T, V> valueGenerator;
