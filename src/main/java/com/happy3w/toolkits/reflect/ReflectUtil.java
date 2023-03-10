@@ -2,6 +2,8 @@ package com.happy3w.toolkits.reflect;
 
 import com.happy3w.java.ext.ListUtils;
 import com.happy3w.java.ext.StringUtils;
+import com.happy3w.toolkits.iterator.EasyIterator;
+import com.happy3w.toolkits.iterator.IEasyIterator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -120,5 +122,9 @@ public class ReflectUtil {
             }
             return null;
         });
+    }
+
+    public static IEasyIterator<Class> enumAllParentTypes(Class type) {
+        return EasyIterator.fromIterator(new ParentTypeIterator(type));
     }
 }
