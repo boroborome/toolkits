@@ -57,6 +57,10 @@ public class SqlBuilder {
         return params.toArray();
     }
 
+    public List<Object> getParamList() {
+        return params;
+    }
+
     public void cleanLast(char ch) {
         while (buffer.length() > 0 && buffer.charAt(buffer.length() - 1) == ch) {
             buffer.setLength(buffer.length() - 1);
