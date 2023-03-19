@@ -202,6 +202,10 @@ public interface IEasyIterator<T> extends Iterator<T> {
         return Optional.empty();
     }
 
+    default IEasyIterator<T> onStart(Consumer<T> startAction) {
+        return new StartActionIterator<>(this, startAction);
+    }
+
     default IEasyIterator<T> onEnd(Runnable endAction) {
         return new EndActionIterator<>(this, endAction);
     }
