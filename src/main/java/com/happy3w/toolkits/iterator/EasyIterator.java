@@ -42,8 +42,12 @@ public final class EasyIterator {
         return new ArrayIterator<>(values);
     }
 
-    public static IntRangeIterator range(int start, int end) {
-        return new IntRangeIterator(start, end);
+    public static LongRangeIterator range(long start, long end) {
+        return new LongRangeIterator(start, end);
+    }
+
+    public static LongRangeIterator range(long start, long end, long step) {
+        return new LongRangeIterator(start, end, step);
     }
 
     public static <T> IEasyIterator<T> emptyIterator() {
