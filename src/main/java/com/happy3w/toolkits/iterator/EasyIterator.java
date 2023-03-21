@@ -1,5 +1,6 @@
 package com.happy3w.toolkits.iterator;
 
+import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -48,6 +49,14 @@ public final class EasyIterator {
 
     public static LongRangeIterator range(long start, long end, long step) {
         return new LongRangeIterator(start, end, step);
+    }
+
+    public static BigRangeIterator bigRange(BigInteger start, BigInteger end) {
+        return new BigRangeIterator(start, end);
+    }
+
+    public static BigRangeIterator bigRange(BigInteger start, BigInteger end, BigInteger step) {
+        return new BigRangeIterator(start, end, step);
     }
 
     public static <T> IEasyIterator<T> emptyIterator() {
