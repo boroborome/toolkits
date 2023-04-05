@@ -210,6 +210,14 @@ public interface IEasyIterator<T> extends Iterator<T> {
         return new EndActionIterator<>(this, endAction);
     }
 
+    default IEasyIterator<T> onItemStart(Consumer<T> startAction) {
+        return this.peek(startAction);
+    }
+
+    default IEasyIterator<T> onItemEnd(Consumer<T> endAction) {
+        return new ItemEndActionIterator<>(this, endAction);
+    }
+
     default IEasyIterator<T> endWhen(Predicate<T> predicate) {
         return new EndWhenIterator<>(this, predicate);
     }
