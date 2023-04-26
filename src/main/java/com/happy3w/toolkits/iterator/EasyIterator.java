@@ -19,7 +19,10 @@ public final class EasyIterator {
     };
 
     public static <T, E extends T> IEasyIterator<T> fromStream(Stream<T> stream) {
-        return stream == null ? emptyIterator() : new IteratorExtIterator<>(stream.iterator());
+        return stream == null
+                ? emptyIterator()
+                : new IteratorExtIterator<>(stream.iterator())
+                .onEnd(stream::close);
     }
 
     public static <T, E extends T> IEasyIterator<T> fromIterator(Iterator<E> iterator) {
