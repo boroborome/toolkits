@@ -22,9 +22,9 @@ public class NameUtil {
         return "set" + capitalizeName;
     }
 
-    public static String getterToField(String methodName) {
+    public static String methodToField(String methodName) {
         String orgFieldName;
-        if (methodName.startsWith("get")) {
+        if (methodName.startsWith("get") || methodName.startsWith("set")) {
             orgFieldName = methodName.substring(3);
         } else if (methodName.startsWith("is")) {
             orgFieldName = methodName.substring(2);

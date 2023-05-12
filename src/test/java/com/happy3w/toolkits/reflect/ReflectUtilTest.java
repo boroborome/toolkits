@@ -18,7 +18,7 @@ class ReflectUtilTest {
         Set<String> names = ReflectUtil.enumMethods(B.class)
                 .map(Method::getName)
                 .toSet();
-        Assertions.assertEquals(new HashSet<>(Arrays.asList("getName", "getAge", "isMan", "getNewName")),
+        Assertions.assertEquals(new HashSet<>(Arrays.asList("getName", "getAge", "isMan", "getNewName", "setName", "setAge", "setMan")),
                 names);
     }
 
@@ -37,6 +37,9 @@ class ReflectUtilTest {
     @Test
     void should_enum_success_with_object() {
         B b = new B();
+        b.setName("a");
+        b.setAge(18);
+        b.setMan(true);
 
         Map<String, Object> newMap = ReflectUtil.enumValues(b)
                 .toMap(Pair::getKey, Pair::getValue);
@@ -49,18 +52,35 @@ class ReflectUtilTest {
     }
 
     public static class A {
+        private String name;
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
         public String getName() {
-            return "a";
+            return name;
         }
     }
 
     public static class B extends A {
+        private int age;
+        private boolean man;
+
         public int getAge() {
-            return 18;
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
         }
 
         public boolean isMan() {
-            return true;
+            return man;
+        }
+
+        public void setMan(boolean man) {
+            this.man = man;
         }
 
         public String getNewName(String prefix) {

@@ -145,7 +145,7 @@ public class ReflectUtil {
                 .filter(m -> m.getName().startsWith("get") || m.getName().startsWith("is"))
                 .filter(m -> m.getParameterCount() == 0)
                 .map(m -> {
-                    String fieldName = NameUtil.getterToField(m.getName());
+                    String fieldName = NameUtil.methodToField(m.getName());
                     Object value = invoke(m, data);
                     return new Pair<>(fieldName, value);
                 });

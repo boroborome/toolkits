@@ -7,9 +7,9 @@ class NameUtilTest {
 
     @Test
     void getterToField() {
-        Assertions.assertEquals("abcDef", NameUtil.getterToField("getAbcDef"));
-        Assertions.assertEquals("abcDef", NameUtil.getterToField("isAbcDef"));
-        Assertions.assertEquals("abcDef", NameUtil.getterToField("abcDef"));
+        Assertions.assertEquals("abcDef", NameUtil.methodToField("getAbcDef"));
+        Assertions.assertEquals("abcDef", NameUtil.methodToField("isAbcDef"));
+        Assertions.assertEquals("abcDef", NameUtil.methodToField("abcDef"));
     }
 
     @Test
