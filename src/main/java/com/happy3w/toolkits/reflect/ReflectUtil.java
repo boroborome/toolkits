@@ -1,6 +1,7 @@
 package com.happy3w.toolkits.reflect;
 
 import com.happy3w.java.ext.ListUtils;
+import com.happy3w.java.ext.Pair;
 import com.happy3w.toolkits.iterator.EasyIterator;
 import com.happy3w.toolkits.iterator.IEasyIterator;
 import com.happy3w.toolkits.utils.NameUtil;
@@ -12,6 +13,7 @@ import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -123,5 +125,42 @@ public class ReflectUtil {
 
     public static IEasyIterator<Class> enumAllParentTypes(Class type) {
         return EasyIterator.fromIterator(new ParentTypeIterator(type));
+    }
+
+    public static IEasyIterator<Pair<String, Object>> enumValues(Object data) {
+        if (data == null) {
+            return EasyIterator.emptyIterator();
+        } else if (data instanceof Map) {
+            return enumMapValues((Map) data);
+        } else {
+            return enumObjectValues(data);
+        }
+    }
+
+    private static IEasyIterator<Pair<String, Object>> enumObjectValues(Object data) {
+        if (data == null) {
+            return EasyIterator.emptyIterator();
+        }
+        return enumMethods(data.getClass())
+                .filter(m -> m.getName().startsWith("get") || m.getName().startsWith("is"))
+                .filter(m -> m.getParameterCount() == 0)
+                .map(m -> {
+                    String fieldName = NameUtil.getterToField(m.getName());
+                    Object value = invoke(m, data);
+                    return new Pair<>(fieldName, value);
+                });
+    }
+
+    public static IEasyIterator<Method> enumMethods(Class dataType) {
+        return EasyIterator.of(dataType.getMethods())
+                .filter(m -> m.getDeclaringClass() != Object.class);
+    }
+
+    private static IEasyIterator enumMapValues(Map data) {
+        return EasyIterator.fromIterable(data.entrySet())
+                .map(e -> {
+                    Map.Entry entry = (Map.Entry) e;
+                    return new Pair<>(String.valueOf(entry.getKey()), entry.getValue());
+                });
     }
 }
