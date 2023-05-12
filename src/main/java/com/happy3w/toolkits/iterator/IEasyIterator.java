@@ -2,6 +2,7 @@ package com.happy3w.toolkits.iterator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,10 +38,17 @@ public interface IEasyIterator<T> extends Iterator<T> {
         return new FlatMapIterator<>(this, mapMethod);
     }
 
+    default <E> IEasyIterator<E> flatMapList(Function<T, Collection<E>> listMethod) {
+        return new FlatMapIterator<>(this, t -> {
+            Collection<E> list = listMethod.apply(t);
+            return list == null ? EasyIterator.emptyIterator() : list.iterator();
+        });
+    }
+    
     default <E> IEasyIterator<E> flatMapStream(Function<T, Stream<E>> mapMethod) {
         return new FlatMapIterator<>(this, t -> {
             Stream<E> stream = mapMethod.apply(t);
-            return stream.iterator();
+            return stream == null ? EasyIterator.emptyIterator() : stream.iterator();
         });
     }
 
