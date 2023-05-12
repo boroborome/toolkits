@@ -1,9 +1,9 @@
 package com.happy3w.toolkits.reflect;
 
 import com.happy3w.java.ext.ListUtils;
-import com.happy3w.java.ext.StringUtils;
 import com.happy3w.toolkits.iterator.EasyIterator;
 import com.happy3w.toolkits.iterator.IEasyIterator;
+import com.happy3w.toolkits.utils.NameUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -34,20 +34,17 @@ public class ReflectUtil {
     }
 
     public static Method findGetter(Field field) {
-        String capitalizeName = StringUtils.capitalize(field.getName());
-        String getterName = "get" + capitalizeName;
         Method[] methods = field.getDeclaringClass().getMethods();
-        Method getter = findMethod(getterName, methods);
+        Method getter = findMethod(NameUtil.fieldToGetter(field.getName(), false), methods);
         if (getter != null) {
             return getter;
         }
 
-        return findMethod("is" + capitalizeName, methods);
+        return findMethod(NameUtil.fieldToGetter(field.getName(), true), methods);
     }
 
     public static Method findSetter(Field field) {
-        String capitalizeName = StringUtils.capitalize(field.getName());
-        return findMethod("set" + capitalizeName, field.getDeclaringClass().getMethods());
+        return findMethod(NameUtil.fieldToSetter(field.getName()), field.getDeclaringClass().getMethods());
     }
 
     public static Object invoke(Method method, Object owner, Object... params) {
