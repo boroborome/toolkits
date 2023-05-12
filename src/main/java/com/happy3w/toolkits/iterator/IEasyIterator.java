@@ -38,6 +38,13 @@ public interface IEasyIterator<T> extends Iterator<T> {
         return new FlatMapIterator<>(this, mapMethod);
     }
 
+    default <E> IEasyIterator<E> flatMapArray(Function<T, E[]> listMethod) {
+        return new FlatMapIterator<>(this, t -> {
+            E[] array = listMethod.apply(t);
+            return array == null ? EasyIterator.emptyIterator() : EasyIterator.of(array);
+        });
+    }
+
     default <E> IEasyIterator<E> flatMapList(Function<T, Collection<E>> listMethod) {
         return new FlatMapIterator<>(this, t -> {
             Collection<E> list = listMethod.apply(t);

@@ -123,6 +123,11 @@ public class ReflectUtil {
         });
     }
 
+    public static IEasyIterator<Class> enumAllTypes(Class type) {
+        return EasyIterator.of(type)
+                .concat(EasyIterator.fromIterator(new ParentTypeIterator(type)));
+    }
+
     public static IEasyIterator<Class> enumAllParentTypes(Class type) {
         return EasyIterator.fromIterator(new ParentTypeIterator(type));
     }
@@ -149,6 +154,12 @@ public class ReflectUtil {
                     Object value = invoke(m, data);
                     return new Pair<>(fieldName, value);
                 });
+    }
+
+    public static IEasyIterator<Field> enumField(Class dataType) {
+        return enumAllTypes(dataType)
+                .flatMapArray(type -> type.getDeclaredFields())
+                .filter(f -> f.getDeclaringClass() != Object.class);
     }
 
     public static IEasyIterator<Method> enumMethods(Class dataType) {

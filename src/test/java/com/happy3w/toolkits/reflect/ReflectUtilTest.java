@@ -5,6 +5,7 @@ import com.happy3w.toolkits.utils.MapBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -23,7 +24,7 @@ class ReflectUtilTest {
     }
 
     @Test
-    void should_enum_success_with_map() {
+    void should_enum_value_success_with_map() {
         Map<String, Object> map = MapBuilder.of("name", (Object) "a")
                 .and("age", 18)
                 .build();
@@ -32,6 +33,25 @@ class ReflectUtilTest {
                 .toMap(Pair::getKey, Pair::getValue);
 
         Assertions.assertEquals(map, newMap);
+    }
+
+    @Test
+    void should_enum_field_success_with_class() {
+        Set<String> names = ReflectUtil.enumField(B.class)
+                .map(Field::getName)
+                .toSet();
+
+        Assertions.assertEquals(new HashSet<>(Arrays.asList("name", "age", "man")), names);
+    }
+
+    @Test
+    void should_enum_type_success() {
+        Set<String> names = ReflectUtil.enumAllTypes(B.class)
+                .map(Class::getName)
+                .toSet();
+        Assertions.assertEquals(new HashSet<>(Arrays.asList(
+                "com.happy3w.toolkits.reflect.ReflectUtilTest$A",
+                "com.happy3w.toolkits.reflect.ReflectUtilTest$B")), names);
     }
 
     @Test
