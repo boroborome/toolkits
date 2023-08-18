@@ -1,13 +1,16 @@
 package com.happy3w.toolkits.reflect;
 
 import com.happy3w.java.ext.StringUtils;
+import com.happy3w.toolkits.utils.NameUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Getter
@@ -18,6 +21,11 @@ public class FieldAccessor {
     private Class propertyType;
     private Method getMethod;
     private Method setMethod;
+
+    private FieldAccessor(String fieldName, Class propertyType) {
+        this.fieldName = fieldName;
+        this.propertyType = propertyType;
+    }
 
     public static FieldAccessor from(String fieldName, Class owner) {
         return from(fieldName, owner.getMethods());
@@ -94,23 +102,34 @@ public class FieldAccessor {
         ReflectUtil.invoke(setMethod, owner, data);
     }
 
-
     public static List<FieldAccessor> allFieldAccessors(Class dataType) {
-        List<FieldAccessor> accessors = new ArrayList<>();
-        Class currentType = dataType;
-        while (currentType != null) {
-            collectFieldAccessor(currentType, accessors);
-            currentType = currentType.getSuperclass();
-        }
-        return accessors;
+        Map<String, FieldAccessor> fieldMap = new HashMap<>();
+        collectAllMethod(dataType, fieldMap);
+        collectAllField(dataType, fieldMap);
+        return new ArrayList<>(fieldMap.values());
     }
 
-    private static void collectFieldAccessor(Class currentType, List<FieldAccessor> accessors) {
-        for (Field field : currentType.getDeclaredFields()) {
-            FieldAccessor accessor = FieldAccessor.from(field);
-            if (accessor != null) {
-                accessors.add(accessor);
-            }
-        }
+    private static void collectAllField(Class dataType, Map<String, FieldAccessor> fieldMap) {
+        ReflectUtil.enumField(dataType)
+                .forEach(field -> {
+                    fieldMap.computeIfAbsent(field.getName(), k -> new FieldAccessor(field.getName(), field.getType()))
+                            .field = field;
+                });
+    }
+
+    private static void collectAllMethod(Class dataType, Map<String, FieldAccessor> fieldMap) {
+        ReflectUtil.enumMethods(dataType)
+                .forEach(method -> {
+                    String methodName = method.getName();
+                    if (methodName.startsWith("get") || methodName.startsWith("is")) {
+                        String fieldName = NameUtil.methodToField(methodName);
+                        fieldMap.computeIfAbsent(fieldName, k -> new FieldAccessor(fieldName, method.getReturnType()))
+                                .getMethod = method;
+                    } else if (methodName.startsWith("set") && method.getParameterCount() == 1) {
+                        String fieldName = NameUtil.methodToField(methodName);
+                        fieldMap.computeIfAbsent(fieldName, k -> new FieldAccessor(fieldName, method.getParameterTypes()[0]))
+                                .setMethod = method;
+                    }
+                });
     }
 }

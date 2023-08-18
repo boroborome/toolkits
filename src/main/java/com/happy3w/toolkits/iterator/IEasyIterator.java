@@ -2,6 +2,7 @@ package com.happy3w.toolkits.iterator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,10 +38,24 @@ public interface IEasyIterator<T> extends Iterator<T> {
         return new FlatMapIterator<>(this, mapMethod);
     }
 
+    default <E> IEasyIterator<E> flatMapArray(Function<T, E[]> listMethod) {
+        return new FlatMapIterator<>(this, t -> {
+            E[] array = listMethod.apply(t);
+            return array == null ? EasyIterator.emptyIterator() : EasyIterator.of(array);
+        });
+    }
+
+    default <E> IEasyIterator<E> flatMapList(Function<T, Collection<E>> listMethod) {
+        return new FlatMapIterator<>(this, t -> {
+            Collection<E> list = listMethod.apply(t);
+            return list == null ? EasyIterator.emptyIterator() : list.iterator();
+        });
+    }
+    
     default <E> IEasyIterator<E> flatMapStream(Function<T, Stream<E>> mapMethod) {
         return new FlatMapIterator<>(this, t -> {
             Stream<E> stream = mapMethod.apply(t);
-            return stream.iterator();
+            return stream == null ? EasyIterator.emptyIterator() : stream.iterator();
         });
     }
 
@@ -202,8 +217,20 @@ public interface IEasyIterator<T> extends Iterator<T> {
         return Optional.empty();
     }
 
+    default IEasyIterator<T> onStart(Consumer<T> startAction) {
+        return new StartActionIterator<>(this, startAction);
+    }
+
     default IEasyIterator<T> onEnd(Runnable endAction) {
         return new EndActionIterator<>(this, endAction);
+    }
+
+    default IEasyIterator<T> onItemStart(Consumer<T> startAction) {
+        return this.peek(startAction);
+    }
+
+    default IEasyIterator<T> onItemEnd(Consumer<T> endAction) {
+        return new ItemEndActionIterator<>(this, endAction);
     }
 
     default IEasyIterator<T> endWhen(Predicate<T> predicate) {

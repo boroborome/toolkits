@@ -1,5 +1,6 @@
 package com.happy3w.toolkits.iterator;
 
+import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -18,7 +19,10 @@ public final class EasyIterator {
     };
 
     public static <T, E extends T> IEasyIterator<T> fromStream(Stream<T> stream) {
-        return stream == null ? emptyIterator() : new IteratorExtIterator<>(stream.iterator());
+        return stream == null
+                ? emptyIterator()
+                : new IteratorExtIterator<>(stream.iterator())
+                .onEnd(stream::close);
     }
 
     public static <T, E extends T> IEasyIterator<T> fromIterator(Iterator<E> iterator) {
@@ -42,8 +46,20 @@ public final class EasyIterator {
         return new ArrayIterator<>(values);
     }
 
-    public static IntRangeIterator range(int start, int end) {
-        return new IntRangeIterator(start, end);
+    public static LongRangeIterator range(long start, long end) {
+        return new LongRangeIterator(start, end);
+    }
+
+    public static LongRangeIterator range(long start, long end, long step) {
+        return new LongRangeIterator(start, end, step);
+    }
+
+    public static BigRangeIterator bigRange(BigInteger start, BigInteger end) {
+        return new BigRangeIterator(start, end);
+    }
+
+    public static BigRangeIterator bigRange(BigInteger start, BigInteger end, BigInteger step) {
+        return new BigRangeIterator(start, end, step);
     }
 
     public static <T> IEasyIterator<T> emptyIterator() {
