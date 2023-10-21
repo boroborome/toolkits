@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class GroupSortedListIterator<T, K, V> extends NeedFindIterator<Map.Entry<K, List<V>>>
+public class AggregateListIterator<T, K, V> extends NeedFindIterator<Map.Entry<K, List<V>>>
     implements IEasyIterator<Map.Entry<K, List<V>>> {
     protected final Iterator<T> innerIterator;
     protected final Function<T, K> keyGenerator;
@@ -24,7 +24,7 @@ public class GroupSortedListIterator<T, K, V> extends NeedFindIterator<Map.Entry
     protected boolean isInitialized = false;
     protected Pair<K, T> preItem;
 
-    public GroupSortedListIterator(Iterator<T> innerIterator, Function<T, K> keyGenerator, Function<T, V> valueGenerator) {
+    public AggregateListIterator(Iterator<T> innerIterator, Function<T, K> keyGenerator, Function<T, V> valueGenerator) {
         this.innerIterator = innerIterator;
         this.keyGenerator = keyGenerator;
         this.valueGenerator = valueGenerator;

@@ -1,22 +1,7 @@
 package com.happy3w.toolkits.iterator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.*;
+import java.util.function.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -95,12 +80,12 @@ public interface IEasyIterator<T> extends Iterator<T> {
      * @param <K> key的类型
      * @return 按照key分组后的Entity迭代器
      */
-    default <K> IEasyIterator<Map.Entry<K, List<T>>> groupBy(Function<T, K> keyGenerator) {
-        return new GroupSortedListIterator<>(this, keyGenerator, v -> v);
+    default <K> IEasyIterator<Map.Entry<K, List<T>>> aggregateBy(Function<T, K> keyGenerator) {
+        return new AggregateListIterator<>(this, keyGenerator, v -> v);
     }
 
-    default <K, V> IEasyIterator<Map.Entry<K, List<V>>> groupBy(Function<T, K> keyGenerator, Function<T, V> valueGenerator) {
-        return new GroupSortedListIterator<>(this, keyGenerator, valueGenerator);
+    default <K, V> IEasyIterator<Map.Entry<K, List<V>>> aggregateBy(Function<T, K> keyGenerator, Function<T, V> valueGenerator) {
+        return new AggregateListIterator<>(this, keyGenerator, valueGenerator);
     }
 
     default void forEach(Consumer<T> consumer) {
