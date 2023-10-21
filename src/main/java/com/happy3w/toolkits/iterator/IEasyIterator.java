@@ -8,7 +8,7 @@ import java.util.stream.StreamSupport;
 public interface IEasyIterator<T> extends Iterator<T> {
 
     default IEasyIterator<List<T>> split(int size) {
-        return new SplitIterator<T>(this, size);
+        return new SplitIterator<>(this, size);
     }
 
     default <R> IEasyIterator<R> map(Function<T, R> mapMethod) {
@@ -71,6 +71,14 @@ public interface IEasyIterator<T> extends Iterator<T> {
 
     default <E extends T> IEasyIterator<E> filter(Class<E> targetType) {
         return new FilterIterator<E, T>(this, d -> d != null && targetType.isAssignableFrom(d.getClass()));
+    }
+
+    default <K> IEasyIterator<Map.Entry<K, List<T>>> groupBy(Function<T, K> keyGenerator) {
+        return GroupByIterator.groupBy(this, keyGenerator);
+    }
+
+    default <K, V> IEasyIterator<Map.Entry<K, List<V>>> groupBy(Function<T, K> keyGenerator, Function<T, V> valueGenerator) {
+        return GroupByIterator.groupBy(this, keyGenerator, valueGenerator);
     }
 
     /**
