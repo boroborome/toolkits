@@ -58,6 +58,14 @@ public class ReflectUtil {
         }
     }
 
+    public static Field accessibleField(Class dataType, String fieldName) {
+        Field field = findField(dataType, fieldName);
+        if (field != null) {
+            field.setAccessible(true);
+        }
+        return field;
+    }
+
     public static Field findField(Class dataType, String fieldName) {
         return findOneInExtend(dataType, curType -> {
             for (Field field : curType.getDeclaredFields()) {
