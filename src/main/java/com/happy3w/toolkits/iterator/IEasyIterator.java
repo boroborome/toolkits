@@ -59,6 +59,27 @@ public interface IEasyIterator<T> extends Iterator<T> {
         });
     }
 
+    default IEasyIterator<T> recurFlatArray(Function<T, T[]> listMethod) {
+        return new RecurIterator<>(this, t -> {
+            T[] array = listMethod.apply(t);
+            return array == null ? EasyIterator.emptyIterator() : EasyIterator.of(array);
+        });
+    }
+
+    default IEasyIterator<T> recurFlatList(Function<T, Collection<T>> listMethod) {
+        return new RecurIterator<>(this, t -> {
+            Collection<T> list = listMethod.apply(t);
+            return list == null ? EasyIterator.emptyIterator() : list.iterator();
+        });
+    }
+
+    default IEasyIterator<T> recurFlatStream(Function<T, Stream<T>> mapMethod) {
+        return new RecurIterator<>(this, t -> {
+            Stream<T> stream = mapMethod.apply(t);
+            return stream == null ? null : stream.iterator();
+        });
+    }
+
     default IEasyIterator<T> filter(Predicate<T> predicate) {
         return new FilterIterator<T, T>(this, predicate);
     }

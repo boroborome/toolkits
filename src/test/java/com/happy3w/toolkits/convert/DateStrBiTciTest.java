@@ -13,10 +13,6 @@ public class DateStrBiTciTest {
 
     @Test
     public void toSource() throws NoSuchAlgorithmException {
-MessageDigest md = MessageDigest.getInstance("MD5");
-md.update("Hello".getBytes());
-System.out.println(new BigInteger(1, md.digest()).toString(16));
-
         DateStrBiTci tci = new DateStrBiTci("yyyy-MM-dd")
                 .appendConfig("yyyy-MM-dd HH:mm:ss");
         Date date = tci.toSource("2020-11-17 14:26:41");
